@@ -1,11 +1,11 @@
 # STATUS: the one page to read first (also the research MAP)
 
-**Last updated:** Fri Oct 16, 7:27 PM (laptop clock). Demo path works on the real arm: `tissue` (camera-located, one tissue to the hand-over spot) then `medicine` (open drawer → real pill box → hand over → close), back to back. Next: backup video, dashboard bridge, thermometer.
+**Last updated:** Fri Oct 16, 7:58 PM (laptop clock). Demo path works on the real arm: `tissue` (camera-located, one tissue to the hand-over spot) then `medicine` (open drawer → real pill box → hand over → close), back to back. Dashboard bridge built (sim-tested). Next: first UI run on the arm, backup video, thermometer.
 Update after every milestone, measurement, or decision. History lives in `research/LOG.md` and the
 EXP/DEC records; this page is only the current state.
 
-## Handoff
-- FOLDER: work in GithubHandly-Care now (git repo); Viam-Hacksidekick is a stale copy. (for a new session, Fri 7:27 PM laptop clock)
+## Handoff (for a new session, Fri 7:58 PM laptop clock)
+- FOLDER (7:56): work in `Github\Handly-Care` now (git repo, own .venv); `Viam-Hack\sidekick` is a stale copy.
 - DEMO (DEC-005): open the middle drawer, take the medicine capsule box out, hand it to the patient; laser thermometer later. Teammate handoff files are coming.
 - DASHBOARD (7:48 PM, sim only so far): `python bridge.py` → open http://localhost:8765 → Arm Setup → Connect. "Release pill box" runs `medicine`, the tissue request / Hand Over runs `tissue`, "Arm to start pose" runs `to_high`; a confirm box shows the checklist before every run. One run at a time. Thermometer stays simulated. Use "Next event" with autoplay PAUSED (autoplay fires beats every 9 s while a 60 s routine runs). `python bridge.py --sim` = no arm.
 - CHAIN (7:22): `tissue` then `medicine` back to back works (tissue ends at 'high'). `python app.py to_high` gets there from anywhere.
