@@ -1,0 +1,8 @@
+
+👤 Put the green block next to the blue block
+🤖 Moving the green block next to the blue block.
+   moving green_toy_block from (283, 49) to next_to:blue_toy_block at (454, 141)
+  high carry refused (Failures: { robot constraint: violation between cam_origin and wall-front:wall-front geometries: 86.09% }, { obstacle constraint: violation between arm:upper_arm and white_cup geometries: 13.91% }, ', None)); carrying at the normal height
+  carry refused (Failures: { robot constraint: violation between cam_origin and wall-front:wall-front geometries: 100.00% }, ', None)); putting the green_toy_block back
+⚠️  I couldn't find a safe path for the green toy block (no safe path to there, so I put the green_toy_block back).
+✅ All done.

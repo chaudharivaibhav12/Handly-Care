@@ -1,0 +1,4 @@
+  naming with AI failed (BadRequestError); using plain names
+  on that spot: brown_object_2
+  naming with AI failed (BadRequestError); using plain names
+placed, 6 mm from target

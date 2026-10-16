@@ -1,0 +1,6 @@
+
+👤 Put the green block next to the blue block
+🤖 Moving the green block next to the blue cylinder block.
+   moving green_toy_block from (279, 50) to next_to:blue_cylinder_block at (230, 346)
+✅ green_toy_block placed (next_to:blue_cylinder_block), 10 mm from the target
+✅ All done.

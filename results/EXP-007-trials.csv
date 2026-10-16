@@ -1,0 +1,26 @@
+time,command,object,from,to,grabbed,error_mm,note
+16:21:01,drawer,middle_drawer,,open,1,,
+16:52:52,drawer,middle_drawer,,open,1,,
+17:05:47,drawer,middle_drawer,,open,0,,move error: no safe path to the drawer knob
+17:06:11,drawer,middle_drawer,,open,0,,move error: no safe path to the drawer knob
+17:07:37,drawer,middle_drawer,,open,0,,move error: no safe path to the drawer knob
+17:26:40,drawer,middle_drawer,,open,1,,"try 4 (joint replay), logged by hand: outcome asked"
+17:27:42,drawer,middle_drawer,,open,1,,
+17:28:57,drawer,middle_drawer,,open,1,,
+17:33:45,drawer,middle_drawer,,open,1,,
+17:34:13,drawer,middle_drawer,,open,0,,EXP-007 try5: slipped (Vaibhav)
+17:34:13,drawer,middle_drawer,,open,1,,"EXP-007 try6: kind of fully, wanted further (Vaibhav)"
+17:34:13,drawer,middle_drawer,,open,1,,"EXP-007 try7: opened fully, new open pose (Vaibhav)"
+17:34:52,drawer,middle_drawer,,close,1,,
+17:37:46,drawer,middle_drawer,,close,1,,"EXP-007 close1: shut, ~1 cm too far (box nudged)"
+17:38:14,drawer,middle_drawer,,open,1,,
+17:38:32,drawer,middle_drawer,,open,1,,EXP-007 open2: fully (Vaibhav)
+17:40:15,drawer,middle_drawer,,close,0,,EXP-007 close2: connection drop (context canceled) after first move
+17:40:55,drawer,middle_drawer,,close,1,,
+17:41:16,drawer,middle_drawer,,close,1,,"EXP-007 close3: shut, box still (close_stop 10 mm short)"
+17:41:31,drawer,middle_drawer,,open,1,,
+17:42:08,drawer,middle_drawer,,open,1,,EXP-007 open3: fully (Vaibhav)
+17:42:38,drawer,middle_drawer,,close,1,,
+17:42:56,drawer,middle_drawer,,close,1,,"EXP-007 close4: shut, box still"
+17:43:10,drawer,middle_drawer,,open,1,,
+17:43:27,drawer,middle_drawer,,open,1,,EXP-007 open4: fully

@@ -1,0 +1,9 @@
+  high -> approach: 4.2 s
+  grip: 0.9 s
+  [joint move] failed ((<Status.CANCELLED: 1>, 'context canceled', None)); retrying
+  [joint move] failed ((<Status.CANCELLED: 1>, 'context canceled', None)); retrying
+2026-10-16 18:56:19,454		[33;31mERROR[0m	viam (__init__.py:34)	[ERROR] Uncaught exception	
+Traceback (most recent call last):
+grpclib.exceptions.GRPCError: (<Status.CANCELLED: 1>, 'context canceled', None)
+Traceback (most recent call last):
+grpclib.exceptions.GRPCError: (<Status.CANCELLED: 1>, 'context canceled', None)

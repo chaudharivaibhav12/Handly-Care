@@ -1,0 +1,68 @@
+{
+ "runs": [
+  {
+   "black_object": [
+    405.0,
+    212.5
+   ],
+   "brown_object": [
+    354.2,
+    407.5
+   ]
+  },
+  {
+   "black_object": [
+    405.0,
+    212.5
+   ],
+   "brown_object": [
+    354.2,
+    407.5
+   ]
+  },
+  {
+   "black_object": [
+    405.0,
+    212.5
+   ],
+   "brown_object": [
+    355.0,
+    407.5
+   ]
+  }
+ ],
+ "summary": {
+  "black_object": {
+   "seen": "3/3",
+   "mean": [
+    405.0,
+    212.5
+   ],
+   "max_dev_mm": 0.0,
+   "size": [
+    80.0,
+    75.0,
+    260.7
+   ],
+   "grasp_height": 130.3,
+   "graspable": false,
+   "why_not": "it's 8 cm wide and my gripper only opens to 8.4 cm"
+  },
+  "brown_object": {
+   "seen": "3/3",
+   "mean": [
+    354.4666666666667,
+    407.5
+   ],
+   "max_dev_mm": 0.533333333333303,
+   "size": [
+    45.0,
+    39.1,
+    56.2
+   ],
+   "grasp_height": 28.1,
+   "graspable": true,
+   "why_not": ""
+  }
+ }
+}

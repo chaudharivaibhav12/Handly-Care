@@ -1,0 +1,7 @@
+time,command,object,from,to,grabbed,error_mm,note
+12:19:08,test,red_cube,slot1,slot2,1,,y
+12:19:26,test,red_cube,slot2,slot1,1,,y
+12:20:49,test,red_cube,slot1,slot2,1,,y
+12:21:07,test,red_cube,slot2,slot1,1,,y
+12:21:26,test,red_cube,slot1,slot2,1,,y
+12:21:47,test,red_cube,slot1,slot2,0,,comment

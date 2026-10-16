@@ -1,0 +1,15 @@
+  high -> approach: 4.1 s
+  grip: 0.9 s
+  pull1 -> pull2 -> pull3 -> open -> open_far: 2.9 s
+  retreat -> high: 4.0 s
+  pill_above: 8.4 s
+  pill_grip: 2.1 s
+  pill_lift -> pill_above: 2.8 s
+  handoff: 4.6 s
+  pill_above -> high: 14.7 s
+  high -> retreat: 3.1 s
+  open_far: 2.1 s
+  open -> pull3 -> pull2 -> pull1 -> close_stop: 3.5 s
+  approach -> high: 3.8 s
+medicine: done
+did the patient get it? (y/n/comment, Enter to skip): 

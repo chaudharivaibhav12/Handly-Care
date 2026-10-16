@@ -1,0 +1,94 @@
+  straight-line move refused ((<Status.UNKNOWN: 2>, 'error moving component arm to inputs [[1.208988070487976 0.6463886499404907 -1.498133897781372 -3.1415913105010986 -0.8517449498176575 -0.7422901391983032] [1.2090063095685495 0.6429058976478867 -1.498713797528469 -3.141594614579178 -0.8558064108681263 -0.7422681798235667] [1.209025464722381 0.6394521840403727 -1.4993404763151135 -3.1415998429201055 -0.8598898555453912 -0.7422434561038624] [1.2090375405118308 0.6360208136956917 -1.5000044098949068 -3.1415902066812116 -0.8639834716666774 -0.7422404847482541] [1.2090547527028377 0.6326168603480871 -1.5007125318307653 -3.14159144360138 -0.8680954512445523 -0.7422234379281665] [1.2090714257194113 0.629238286506331 -1.5014618504818384 -3.141591477978481 -0.8722233551453187 -0.7422067586672876] [1.2090880983266596 0.625885709394823 -1.5022531005417648 -3.1415915110021824 -0.8763671922945584 -0.7421900812293428] [1.209104770367349 0.6225592535447229 -1.5030863185757397 -3.14159154237982 -0.8805268753742782 -0.742173406274817] [1.2091214419650111 0.6192590445247691 -1.5039615438672578 -3.1415915723756456 -0.8847023193106548 -0.7421567334931539] [1.2091381160119885 0.6159851950784344 -1.5048787991221357 -3.14159160635373 -0.8888934238153909 -0.7421400498171828] [1.2091547934496074 0.6127378517432104 -1.5058381557334983 -3.141591647943973 -0.8931001309435271 -0.7421233612422373] [1.2091714670257454 0.6095171284947173 -1.5068396407648035 -3.141591680681922 -0.8973223441241955 -0.742106682811886] [1.209188141612199 0.6063231586673672 -1.5078833096820603 -3.1415917149114345 -0.9015599912122403 -0.74209000410386] [1.2092048149014312 0.6031560669893475 -1.5089692077301942 -3.141591745985417 -0.9058129908037502 -0.7420733291115432] [1.2092214867991955 0.6000159839319553 -1.510097389548532 -3.141591773828863 -0.9100812698221217 -0.7420566577820843] [1.2092381663404237 0.5969030170456298 -1.5112678788265588 -3.1415918164169216 -0.9143647219836029 -0.7420399665266374] [1.2092548415578575 0.5938173227394837 -1.512480769775671 -3.141591849893755 -0.918663314176842 -0.742023287795359] [1.2092715170244923 0.5907590203227202 -1.5137361058703507 -3.1415918833851157 -0.9229769596362013 -0.7420066089596216] [1.209288192848008 0.5877282401224063 -1.5150339476989896 -3.1415919171257825 -0.9273055886703521 -0.7419899297194336] [1.2093048689404828 0.5847251130005802 -1.516374358229762 -3.141591950926494 -0.9316491333407492 -0.7419732503396905] [1.2093215451546686 0.5817497705057433 -1.517757403055213 -3.141591984473587 -0.9360075277080062 -0.7419565712250124] [1.2093382214761643 0.5788023448380136 -1.5191831503762958 -3.1415920177350856 -0.9403807077692072 -0.7419398923995558] [1.2093548980081126 0.5758829689004407 -1.5206516711064773 -3.1415920509369117 -0.9447686115308819 -0.7419232135878796] [1.2093715766592652 0.5729917712410402 -1.5221630322902804 -3.1415920880299875 -0.9491711721807301 -0.7419065275207373] [1.2093882523790203 0.5701288997986343 -1.5237173281394465 -3.141592118532019 -0.953588350396354 -0.741889853539731] [1.209404928864544 0.5672944786783072 -1.525314623698927 -3.141592150174381 -0.958020075446307 -0.7418731771362691] [1.2094230237969499 0.5644878018524404 -1.5269537804168625 -3.141595221533615 -0.9624673594201191 -0.7418600976177995] [1.2094381373101135 0.5617116644285611 -1.528638734371399 -3.1415919308415616 -0.9669268929981006 -0.7418392829463509] [1.20945587685182 0.5589627068070162 -1.5303645207191603 -3.1415942286154337 -0.9714027057859925 -0.7418256258187428] [1.2094714928415617 0.5562442032181607 -1.5321357440615575 -3.141592012387164 -0.9758913736692857 -0.7418058093279533] [1.2094888728438467 0.5535535514411234 -1.5339485676191453 -3.1415935276970783 -0.980395558682558 -0.7417914307041829] [1.2095055091860965 0.5508925599238903 -1.5358055608919392 -3.14159349891619 -0.9849134811163531 -0.7417752243056909] [1.2095220736414716 0.5482612122218167 -1.537706434681945 -3.1415932917684635 -0.9894455982742772 -0.7417583000914739] [1.2095386524366558 0.5456594988616449 -1.5396511291245276 -3.141593102009111 -0.9939919210029032 -0.7417411524614317] [1.2095533381026924 0.5430883244088333 -1.5416408207932342 -3.1415888481616787 -0.9985511137167652 -0.7417204942232279] [1.2095716305395134 0.5405453512227191 -1.5436722247112158 -3.141592308496371 -1.0031269641428007 -0.7417060358425747] [1.2095884503786514 0.5380330906867289 -1.545748704593369 -3.1415926498162787 -1.0077156928900726 -0.7416899960422658] [1.209605103637293 0.5355509705359743 -1.5478693922647362 -3.1415926215896937 -1.0123184804896452 -0.7416732064686276] [1.2096217636873825 0.533099132271711 -1.5500343959652985 -3.141592607482526 -1.0169353093438118 -0.7416564507183522] [1.2096384279548533 0.5306777250163203 -1.552243845334928 -3.141592603072991 -1.021566157008476 -0.7416397236131339] [1.2096550967932902 0.5282869004325033 -1.554497875130017 -3.1415926094698334 -1.0262110065607062 -0.7416230162976382]]: rpc error: code = Unknown desc = xArm: Emergency Stop Button Pushed In; ', None)); using a normal move
+  [move] failed ((<Status.UNKNOWN: 2>, 'error moving component arm to inputs [[1.209553360939026 0.5430883169174194 -1.5416408777236938 -3.1415889263153076 -0.9985511302947998 -0.7417204976081848] [1.209655031872407 0.5282867051977895 -1.554497917345644 -3.141592589487687 -1.0262111224200794 -0.7416228249497081]]: rpc error: code = Unknown desc = xArm: Servo motor 1 error; ; xArm: Emergency Stop Button Pushed In; ', None)); retrying
+  [move] failed ((<Status.UNKNOWN: 2>, 'error moving component arm to inputs [[1.2093865871429441 0.562106192111969 -1.5292541980743408 -3.1415984630584717 -0.9642526507377625 -0.7418695688247681] [1.2096545842852393 0.5282872166087129 -1.5544984115436438 -3.1415916394419683 -1.026211615968337 -0.7416242851814051]]: rpc error: code = Unknown desc = xArm: Emergency Stop Button Pushed In; ', None)); retrying
+2026-10-16 16:23:10,398		[33;31mERROR[0m	viam (__init__.py:34)	[ERROR] Uncaught exception	
+Traceback (most recent call last):
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 344, in <module>
+    sys.exit(0 if asyncio.run(main()) else 1)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 331, in main
+    return await run_command(robot, args.command)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 203, in run_command
+    moved = await robot.drawer(cmd[1])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 243, in drawer
+    await self.move_to(*end, up, straight=True, theta=th)              # straight up, clear of the knob
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 134, in move_to
+    return await retry("move", lambda: go(None), delay=self.retry_delay)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 66, in retry
+    return await fn()
+           ^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 117, in go
+    return await self.motion.move(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\viam\services\motion\client.py", line 88, in move
+    response: MoveResponse = await self.client.Move(request, timeout=timeout, metadata=md)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 911, in __call__
+    async with self.open(timeout=timeout, metadata=metadata) as stream:
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 554, in __aexit__
+    await self._maybe_finish()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 524, in _maybe_finish
+    await self.recv_trailing_metadata()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 485, in recv_trailing_metadata
+    self._raise_for_grpc_status(status, message, details)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 346, in _raise_for_grpc_status
+    raise GRPCError(status, message, details)
+grpclib.exceptions.GRPCError: (<Status.UNKNOWN: 2>, 'error moving component arm to inputs [[1.2093865871429441 0.562106192111969 -1.5292541980743408 -3.1415984630584717 -0.9642526507377625 -0.7418695688247681] [1.2096545842852393 0.5282872166087129 -1.5544984115436438 -3.1415916394419683 -1.026211615968337 -0.7416242851814051]]: rpc error: code = Unknown desc = xArm: Emergency Stop Button Pushed In; ', None)
+Traceback (most recent call last):
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 344, in <module>
+    sys.exit(0 if asyncio.run(main()) else 1)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 331, in main
+    return await run_command(robot, args.command)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 203, in run_command
+    moved = await robot.drawer(cmd[1])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 243, in drawer
+    await self.move_to(*end, up, straight=True, theta=th)              # straight up, clear of the knob
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 134, in move_to
+    return await retry("move", lambda: go(None), delay=self.retry_delay)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 66, in retry
+    return await fn()
+           ^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 117, in go
+    return await self.motion.move(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\viam\services\motion\client.py", line 88, in move
+    response: MoveResponse = await self.client.Move(request, timeout=timeout, metadata=md)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 911, in __call__
+    async with self.open(timeout=timeout, metadata=metadata) as stream:
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 554, in __aexit__
+    await self._maybe_finish()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 524, in _maybe_finish
+    await self.recv_trailing_metadata()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 485, in recv_trailing_metadata
+    self._raise_for_grpc_status(status, message, details)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 346, in _raise_for_grpc_status
+    raise GRPCError(status, message, details)
+grpclib.exceptions.GRPCError: (<Status.UNKNOWN: 2>, 'error moving component arm to inputs [[1.2093865871429441 0.562106192111969 -1.5292541980743408 -3.1415984630584717 -0.9642526507377625 -0.7418695688247681] [1.2096545842852393 0.5282872166087129 -1.5544984115436438 -3.1415916394419683 -1.026211615968337 -0.7416242851814051]]: rpc error: code = Unknown desc = xArm: Emergency Stop Button Pushed In; ', None)

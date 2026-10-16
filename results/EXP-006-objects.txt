@@ -1,0 +1,5 @@
+  clear_glass_jar x=   193 y=   165  56x49x110 mm, grip at 95 (near the top)  <- CAN'T GRAB: glass can break
+  red_cup    x=   395 y=   222  in left  35x35x60 mm, grip at 39
+  blue_toy_block x=   454 y=    62  42x32x60 mm, grip at 39
+  wooden_toy_figure x=   369 y=     3  58x32x143 mm, grip at 128 (near the top)
+  green_toy_block x=   277 y=    53  40x28x60 mm, grip at 39

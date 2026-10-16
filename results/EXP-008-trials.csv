@@ -1,0 +1,12 @@
+time,command,object,from,to,grabbed,error_mm,note
+18:15:36,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:45:04,pills,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:45:56,pills,pill_box,drawer,handoff,1,,EXP-008 try1: handed over (Vaibhav)
+18:48:28,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:49:01,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine1: all good (Vaibhav)
+18:50:29,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:51:00,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine2: all good (Vaibhav)
+18:52:19,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:53:06,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine3: all good (Vaibhav)
+18:54:16,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:55:21,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine4: all good (Vaibhav)

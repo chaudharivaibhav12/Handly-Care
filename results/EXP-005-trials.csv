@@ -1,0 +1,7 @@
+time,command,object,from,to,grabbed,error_mm,note
+14:52:04,pick,brown_object_2,"388,416",tray,1,1.3,
+14:53:28,pick,brown_object_2,"164,557",left,1,6.0,
+15:02:34,pick,brown_object_2,"395,228",tray,1,10.6,
+15:06:08,pick,black_object_2,"168,550",left,1,10.2,
+15:07:07,pick,brown_object_2,"399,222",tray,1,13.5,
+15:08:03,pick,black_object,"164,558",left,1,3.7,

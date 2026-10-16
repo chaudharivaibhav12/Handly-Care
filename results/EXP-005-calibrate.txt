@@ -1,0 +1,11 @@
+  naming with AI failed (BadRequestError); using plain names
+  slot1: nothing within 80 mm, skipped
+  slot2: nothing within 80 mm, skipped
+  slot3: brown_object_2 seen at (370, -16), truth (369, -14), off by 2 mm
+  slot4: black_object seen at (441, 93), truth (456, 76), off by 23 mm
+  tray: nothing within 80 mm, skipped
+  to_me: brown_object seen at (389, 402), truth (386, 414), off by 13 mm
+  left: nothing within 80 mm, skipped
+  right: black_object_2 seen at (158, 329), truth (167, 347), off by 20 mm
+saved calibration.json: affine fit from 4 point(s); average error 16.6 mm -> 10.1 mm
+  still over 10 mm: re-check the taught spots, or that each object really is centered on its spot

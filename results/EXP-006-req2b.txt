@@ -1,0 +1,7 @@
+
+👤 Put the green block next to the blue block
+🤖 Moving the green block next to the blue block.
+   moving green_toy_block from (284, 58) to next_to:blue_toy_block at (453, 135)
+  high carry refused ((<Status.UNKNOWN: 2>, 'all IK solutions failed constraints. Failures: { robot constraint: violation between cam_origin a); carrying at the normal height
+⚠️  I couldn't find a safe path for the green toy block (no safe path to there, so I put the green_toy_block back).
+✅ All done.

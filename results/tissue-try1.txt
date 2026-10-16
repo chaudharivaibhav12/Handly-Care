@@ -1,0 +1,3 @@
+  tissue_box at (341, 282), 128x125 mm, top 172 mm
+tissue: done
+one tissue handed over? (y/n/comment, Enter to skip): 

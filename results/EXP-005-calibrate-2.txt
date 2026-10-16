@@ -1,0 +1,10 @@
+  naming with AI failed (BadRequestError); using plain names
+  slot1: gray_object seen at (205, 138), truth (197, 164), off by 27 mm
+  slot2: black_object_2 seen at (288, 37), truth (277, 64), off by 29 mm
+  slot3: brown_object_4 seen at (370, -16), truth (369, -14), off by 2 mm
+  slot4: black_object seen at (460, 48), truth (456, 76), off by 28 mm
+  tray: brown_object_5 seen at (168, 526), truth (174, 550), off by 25 mm
+  to_me: brown_object_2 seen at (391, 399), truth (386, 414), off by 16 mm
+  left: brown_object_3 seen at (401, 211), truth (389, 225), off by 18 mm
+  right: brown_object seen at (168, 325), truth (167, 347), off by 22 mm
+saved calibration.json: affine fit from 8 point(s); average error 22.5 mm -> 9.0 mm

@@ -1,0 +1,99 @@
+
+👤 Put the green block next to the blue block
+🤖 Moving the green block next to the blue block.
+   moving green_toy_block from (277, 52) to next_to:blue_toy_block at (454, 136)
+  [move] failed ((<Status.UNKNOWN: 2>, 'all IK solutions failed constraints. Failures: { robot constraint: violation between cam_origin and wall-front:wall-front geometries: 85.82% }, { obstacle constraint: violation between arm:upper_arm and clear_glass geometries: 14.18% }, ', None)); retrying
+  [move] failed ((<Status.UNKNOWN: 2>, 'all IK solutions failed constraints. Failures: { robot constraint: violation between cam_origin and wall-front:wall-front geometries: 85.63% }, { obstacle constraint: violation between arm:upper_arm and clear_glass geometries: 14.37% }, ', None)); retrying
+2026-10-16 15:38:53,450		[33;31mERROR[0m	viam (__init__.py:34)	[ERROR] Uncaught exception	
+Traceback (most recent call last):
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 327, in <module>
+    sys.exit(0 if asyncio.run(main()) else 1)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 315, in main
+    await interactive(robot, args.feed)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 121, in interactive
+    await executor.run_task(robot, request, queue, status)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\executor.py", line 143, in run_task
+    grabbed = await robot.move_object(obj, src, (tx, ty), lift, others=scene)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 160, in move_object
+    await self.move_to(dx, dy, travel_z, avoid=avoid)    # over the destination
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 115, in move_to
+    return await retry("move", lambda: go(None), delay=self.retry_delay)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 52, in retry
+    return await fn()
+           ^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 100, in go
+    return await self.motion.move(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\viam\services\motion\client.py", line 88, in move
+    response: MoveResponse = await self.client.Move(request, timeout=timeout, metadata=md)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 911, in __call__
+    async with self.open(timeout=timeout, metadata=metadata) as stream:
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 554, in __aexit__
+    await self._maybe_finish()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 524, in _maybe_finish
+    await self.recv_trailing_metadata()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 485, in recv_trailing_metadata
+    self._raise_for_grpc_status(status, message, details)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 346, in _raise_for_grpc_status
+    raise GRPCError(status, message, details)
+grpclib.exceptions.GRPCError: (<Status.UNKNOWN: 2>, 'all IK solutions failed constraints. Failures: { robot constraint: violation between cam_origin and wall-front:wall-front geometries: 85.78% }, { obstacle constraint: violation between arm:upper_arm and clear_glass geometries: 14.22% }, ', None)
+Traceback (most recent call last):
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 327, in <module>
+    sys.exit(0 if asyncio.run(main()) else 1)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 315, in main
+    await interactive(robot, args.feed)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 121, in interactive
+    await executor.run_task(robot, request, queue, status)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\executor.py", line 143, in run_task
+    grabbed = await robot.move_object(obj, src, (tx, ty), lift, others=scene)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 160, in move_object
+    await self.move_to(dx, dy, travel_z, avoid=avoid)    # over the destination
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 115, in move_to
+    return await retry("move", lambda: go(None), delay=self.retry_delay)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 52, in retry
+    return await fn()
+           ^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 100, in go
+    return await self.motion.move(
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\viam\services\motion\client.py", line 88, in move
+    response: MoveResponse = await self.client.Move(request, timeout=timeout, metadata=md)
+                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 911, in __call__
+    async with self.open(timeout=timeout, metadata=metadata) as stream:
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 554, in __aexit__
+    await self._maybe_finish()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 524, in _maybe_finish
+    await self.recv_trailing_metadata()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 485, in recv_trailing_metadata
+    self._raise_for_grpc_status(status, message, details)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 346, in _raise_for_grpc_status
+    raise GRPCError(status, message, details)
+grpclib.exceptions.GRPCError: (<Status.UNKNOWN: 2>, 'all IK solutions failed constraints. Failures: { robot constraint: violation between cam_origin and wall-front:wall-front geometries: 85.78% }, { obstacle constraint: violation between arm:upper_arm and clear_glass geometries: 14.22% }, ', None)

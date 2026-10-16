@@ -1,0 +1,75 @@
+time,command,object,from,to,grabbed,error_mm,note
+12:19:08,test,red_cube,slot1,slot2,1,,y
+12:19:26,test,red_cube,slot2,slot1,1,,y
+12:20:49,test,red_cube,slot1,slot2,1,,y
+12:21:07,test,red_cube,slot2,slot1,1,,y
+12:21:26,test,red_cube,slot1,slot2,1,,y
+12:21:47,test,red_cube,slot1,slot2,0,,EMPTY-GRAB check: no cube on purpose; correctly reported missed
+12:33:28,test,red_cube,slot1,slot2,1,,y
+14:23:00,pick,brown_object,"193,162",tray,1,49.1,
+14:24:46,pick,brown_object_2,"161,575",right,0,235.9,
+14:32:11,pick,brown_object,"385,409",left,1,15.9,
+14:32:41,pick,brown_object,"403,219",to_me,1,6.5,
+14:33:29,pick,brown_object,"387,408",left,1,19.2,
+14:33:56,pick,brown_object,"404,213",to_me,1,7.7,
+14:52:04,pick,brown_object_2,"388,416",tray,1,1.3,
+14:53:28,pick,brown_object_2,"164,557",left,1,6.0,
+15:02:34,pick,brown_object_2,"395,228",tray,1,10.6,
+15:06:08,pick,black_object_2,"168,550",left,1,10.2,
+15:07:07,pick,brown_object_2,"399,222",tray,1,13.5,
+15:08:03,pick,black_object,"164,558",left,1,3.7,
+16:21:01,drawer,middle_drawer,,open,1,,
+16:52:52,drawer,middle_drawer,,open,1,,
+17:05:47,drawer,middle_drawer,,open,0,,move error: no safe path to the drawer knob
+17:06:11,drawer,middle_drawer,,open,0,,move error: no safe path to the drawer knob
+17:07:37,drawer,middle_drawer,,open,0,,move error: no safe path to the drawer knob
+17:26:40,drawer,middle_drawer,,open,1,,"try 4 (joint replay), logged by hand: outcome asked"
+17:27:42,drawer,middle_drawer,,open,1,,
+17:28:57,drawer,middle_drawer,,open,1,,
+17:33:45,drawer,middle_drawer,,open,1,,
+17:34:13,drawer,middle_drawer,,open,0,,EXP-007 try5: slipped (Vaibhav)
+17:34:13,drawer,middle_drawer,,open,1,,"EXP-007 try6: kind of fully, wanted further (Vaibhav)"
+17:34:13,drawer,middle_drawer,,open,1,,"EXP-007 try7: opened fully, new open pose (Vaibhav)"
+17:34:52,drawer,middle_drawer,,close,1,,
+17:37:46,drawer,middle_drawer,,close,1,,"EXP-007 close1: shut, ~1 cm too far (box nudged)"
+17:38:14,drawer,middle_drawer,,open,1,,
+17:38:32,drawer,middle_drawer,,open,1,,EXP-007 open2: fully (Vaibhav)
+17:40:15,drawer,middle_drawer,,close,0,,EXP-007 close2: connection drop (context canceled) after first move
+17:40:55,drawer,middle_drawer,,close,1,,
+17:41:16,drawer,middle_drawer,,close,1,,"EXP-007 close3: shut, box still (close_stop 10 mm short)"
+17:41:31,drawer,middle_drawer,,open,1,,
+17:42:08,drawer,middle_drawer,,open,1,,EXP-007 open3: fully (Vaibhav)
+17:42:38,drawer,middle_drawer,,close,1,,
+17:42:56,drawer,middle_drawer,,close,1,,"EXP-007 close4: shut, box still"
+17:43:10,drawer,middle_drawer,,open,1,,
+17:43:27,drawer,middle_drawer,,open,1,,EXP-007 open4: fully
+18:15:36,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:24:47,drawer,middle_drawer,,open,0,,move error: I'm too far from the start pose (275 deg on one joint); move me near 'high' first
+18:30:18,drawer,middle_drawer,,open,1,,
+18:33:56,drawer,middle_drawer,,open,0,,move error: I'm too far from the start pose (76 deg on one joint); move me near 'high' first
+18:36:37,drawer,middle_drawer,,open,1,,
+18:45:04,pills,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:45:56,pills,pill_box,drawer,handoff,1,,EXP-008 try1: handed over (Vaibhav)
+18:46:42,drawer,middle_drawer,,close,1,,
+18:47:10,drawer,middle_drawer,,close,1,,"close from open_far: shut, box still (Vaibhav)"
+18:48:28,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:49:01,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine1: all good (Vaibhav)
+18:50:29,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:51:00,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine2: all good (Vaibhav)
+18:52:19,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:53:06,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine3: all good (Vaibhav)
+18:54:16,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+18:55:21,medicine,pill_box,drawer,handoff,1,,EXP-008 medicine4: all good (Vaibhav)
+18:58:15,medicine,pill_box,drawer,handoff,0,,"rehearsal 6:56: context canceled x3 during pull; recovered to high, drawer open"
+19:00:49,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+19:01:51,medicine,pill_box,drawer,handoff,1,,"rehearsal 7:00: all good (Vaibhav), after config speed 90"
+19:05:38,tissue,tissue_box,"341,282",handoff,1,,ran (outcome not checked)
+19:08:29,tissue,tissue_box,"341,282",handoff,0,,try1: pulled the whole box (not taped)
+19:09:00,tissue,tissue_box,"336,271",handoff,1,,ran (outcome not checked)
+19:09:51,tissue,tissue_box,"336,271",handoff,1,,try2: one tissue handed over (box taped)
+19:14:07,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+19:14:43,medicine,pill_box,drawer,handoff,1,,rehearsal 7:13: all good (Vaibhav)
+19:19:58,tissue,tissue_box,"337,269",handoff,1,,ran (outcome not checked)
+19:21:15,tissue,tissue_box,"337,269",handoff,1,,"try3: one tissue handed over; chain from high via lean-back, ended with to_high"
+19:22:27,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+19:23:02,medicine,pill_box,drawer,handoff,1,,rehearsal 7:21 right after tissue: all good (Vaibhav)

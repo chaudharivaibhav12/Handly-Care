@@ -1,0 +1,1 @@
+couldn't open the drawer: I'm too far from the start pose (275 deg on one joint); move me near 'high' first

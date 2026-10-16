@@ -1,0 +1,6 @@
+# seconds_to_wait|what the person says   (python app.py --sim --feed demo.txt)
+# Delays count from the previous line. Each simulated move takes 0.5 s.
+0|Give me something to write with
+1|Put the cup in the tray, and the red cube on top of the blue cube
+0.3|Actually, put the red cube next to the cup instead
+3|Pick up my laptop

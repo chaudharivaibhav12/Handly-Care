@@ -1,0 +1,140 @@
+{
+ "runs": [
+  {
+   "black_object": [
+    186.8,
+    509.8
+   ],
+   "brown_object": [
+    393.3,
+    212.8
+   ],
+   "gray_object": [
+    420.2,
+    391.2
+   ],
+   "black_object_2": [
+    48.2,
+    572.6
+   ],
+   "gray_object_2": [
+    487.9,
+    451.3
+   ]
+  },
+  {
+   "black_object": [
+    183.7,
+    518.9
+   ],
+   "brown_object": [
+    394.8,
+    214.5
+   ],
+   "gray_object": [
+    423.9,
+    390.8
+   ],
+   "black_object_2": [
+    46.7,
+    575.3
+   ],
+   "gray_object_2": null
+  },
+  {
+   "black_object": null,
+   "brown_object": [
+    388.3,
+    215.9
+   ],
+   "gray_object": [
+    411.5,
+    385.4
+   ],
+   "black_object_2": null,
+   "gray_object_2": null
+  }
+ ],
+ "summary": {
+  "black_object": {
+   "seen": "2/3",
+   "mean": [
+    185.25,
+    514.35
+   ],
+   "max_dev_mm": 4.806766064621841,
+   "size": [
+    83.7,
+    72.1,
+    32.7
+   ],
+   "grasp_height": 16.4,
+   "graspable": true,
+   "why_not": ""
+  },
+  "brown_object": {
+   "seen": "3/3",
+   "mean": [
+    392.1333333333334,
+    214.4
+   ],
+   "max_dev_mm": 4.116363011742858,
+   "size": [
+    65.5,
+    22.7,
+    139.2
+   ],
+   "grasp_height": 69.6,
+   "graspable": true,
+   "why_not": ""
+  },
+  "gray_object": {
+   "seen": "3/3",
+   "mean": [
+    418.5333333333333,
+    389.1333333333334
+   ],
+   "max_dev_mm": 7.9627605486762985,
+   "size": [
+    24.6,
+    16.9,
+    50.3
+   ],
+   "grasp_height": 25.1,
+   "graspable": true,
+   "why_not": ""
+  },
+  "black_object_2": {
+   "seen": "2/3",
+   "mean": [
+    47.45,
+    573.95
+   ],
+   "max_dev_mm": 1.54434452114807,
+   "size": [
+    28.8,
+    12.7,
+    21.3
+   ],
+   "grasp_height": 10.7,
+   "graspable": true,
+   "why_not": ""
+  },
+  "gray_object_2": {
+   "seen": "1/3",
+   "mean": [
+    487.9,
+    451.3
+   ],
+   "max_dev_mm": 0.0,
+   "size": [
+    34.8,
+    18.1,
+    20.9
+   ],
+   "grasp_height": 10.4,
+   "graspable": true,
+   "why_not": ""
+  }
+ }
+}

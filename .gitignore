@@ -1,0 +1,13 @@
+.env
+.venv/
+status.json
+overview.*
+__pycache__/
+.pytest_cache/
+results/*.jpg
+results/*.png
+results/*.ply
+trials-sim.csv
+node_modules/
+dist/
+*.pyc

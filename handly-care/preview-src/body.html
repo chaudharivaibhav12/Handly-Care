@@ -1,0 +1,139 @@
+<div class="app">
+  <aside class="side gutter-l" aria-label="Navigation">
+    <div class="brand">
+      <span class="logo" aria-hidden="true"><svg viewBox="0 0 100 100" aria-hidden="true"><defs><linearGradient id="gui" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3FD0E6"/><stop offset="1" stop-color="#0A7CFF"/></linearGradient>
+<linearGradient id="sui" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".22"/><stop offset=".5" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+<rect width="100" height="100" rx="23" fill="url(#gui)"/>
+<rect width="100" height="100" rx="23" fill="url(#sui)"/>
+<g fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round">
+<path d="M33 22V78"/>
+<path d="M33 56C33 45.5 40.5 40 49.5 40C59 40 66 45.5 66 56V78"/>
+</g>
+<circle cx="72" cy="25" r="7.5" fill="#fff"/></svg></span>
+      <div><div class="bname">Handly <span class="care">Care</span></div><div class="bsub">5 North · General surgery</div></div>
+    </div>
+    <nav class="nav">
+      <button class="navitem" data-view="overview" data-target="top" aria-current="page"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>Overview</button>
+      <button class="navitem" data-view="overview" data-target="secArms"><svg viewBox="0 0 24 24"><path d="M5 19l5-6 3 2 6-8"/></svg>Arms Log<span class="navcount" id="navArms">3</span></button>
+      <button class="navitem" data-view="overview" data-target="secQueue"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h9"/></svg>Nurse Queue<span class="navcount" id="navQueue">0</span></button>
+      <div class="navsep"></div>
+      <button class="navitem" data-view="setup"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Arm Setup<span class="ldot" id="navDot"></span></button>
+    </nav>
+    <div class="sidefoot">
+      <div class="onshift"><span class="lbl">On shift</span>Frank Sinatra, RN<br>J. Ortiz, CNA</div>
+      <p>Concept demo. Patients, readings and staff are fictional.</p>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="top gutter-r" id="topbar">
+      <div class="ttl">
+        <h1 id="pageTitle">Overview</h1>
+        <span class="tsub"><span class="rundot" aria-hidden="true"></span><span id="pageSub">Night shift · 3 patients · avg age 74</span></span>
+      </div>
+      <div class="ctrls" role="group" aria-label="Demo controls">
+        <span class="clock" id="clock">02:10</span>
+        <button id="btnLive" class="btn"><span class="ldot" id="liveDot"></span><span id="btnLiveText">Connect Arm</span></button>
+        <span class="vsep" aria-hidden="true"></span>
+        <button id="btnRun" class="btn primary">Start demo</button>
+        <button id="btnNext" class="btn" title="Fire the next scripted event (key: N)">Next event</button>
+        <span class="seg" role="group" aria-label="Speed"><button data-speed="1" aria-pressed="true">1×</button><button data-speed="2" aria-pressed="false">2×</button></span>
+        <button id="btnSound" class="btn" aria-pressed="false">Sound off</button>
+        <button id="btnReset" class="btn ghost">Reset</button>
+      </div>
+    </header>
+
+    <div class="content gutter-r" id="top">
+      <!-- Overview -->
+      <div id="viewOverview">
+        <section class="kpis" aria-label="Shift summary">
+          <div class="kpi" id="statNeed"><span class="k">In nurse queue</span><span class="v num" id="vNeed">0</span><span class="n" id="vNeedNote">Alerts and approvals</span></div>
+          <div class="kpi"><span class="k">Handled by arms</span><span class="v num" id="vHandled">7</span><span class="n">Tonight, since 7pm</span></div>
+          <div class="kpi"><span class="k">Nurse time given back</span><span class="v num"><span id="vSaved">28</span><small>min</small></span><span class="n">Est. 4 min per avoided trip</span></div>
+          <div class="kpi"><span class="k">Avg arm response</span><span class="v num"><span id="vResp">58</span><small>s</small></span><span class="n">Request to item in hand</span></div>
+        </section>
+
+        <div class="grid">
+          <div class="maincol">
+            <section class="panel" id="secArms" aria-labelledby="hArms">
+              <div class="phead"><h2 id="hArms">Arms Log</h2><span class="pmeta" id="armCount">3 online</span></div>
+              <div class="tablewrap">
+                <table class="arms">
+                  <thead><tr><th>Room</th><th>Patient</th><th>Arm</th><th>Activity</th><th class="r"><span class="sr">Actions</span></th></tr></thead>
+                  <tbody id="armRows"></tbody>
+                </table>
+              </div>
+            </section>
+          </div>
+
+          <aside class="sidecol">
+            <section class="panel" id="secQueue" aria-labelledby="hQueue">
+              <div class="phead"><h2 id="hQueue">Nurse Queue</h2><span class="pmeta" id="needCount">Nothing waiting</span></div>
+              <div class="queue" id="queue"></div>
+            </section>
+            <section class="panel" aria-labelledby="hRules">
+              <div class="phead"><h2 id="hRules">Arm rules</h2></div>
+              <ul class="rules">
+                <li><span class="dot" style="background:var(--teal)"></span><div><b>Arm on its own</b><span>Water and small items from the tray.</span></div></li>
+                <li><span class="dot" style="background:var(--blue)"></span><div><b>Nurse release</b><span>Medication. Only nurse-prepared pill boxes.</span></div></li>
+                <li><span class="dot" style="background:var(--orange)"></span><div><b>Arm measures, nurse reviews</b><span>Non-contact temperature, about 4 cm from the forehead.</span></div></li>
+                <li><span class="dot" style="background:var(--indigo)"></span><div><b>Speaks before it moves</b><span>Says what it is doing, slowly, before every hand-over.</span></div></li>
+                <li><span class="dot" style="background:var(--red)"></span><div><b>Nurse only</b><span>Vital-sign alerts, getting out of bed, confusion, pain, anything clinical.</span></div></li>
+              </ul>
+            </section>
+          </aside>
+        </div>
+      </div>
+
+      <!-- Arm Setup -->
+      <div id="viewSetup" hidden>
+        <!--PREVIEW_NOTE-->
+        <div class="setupgrid">
+          <div class="setupcol">
+            <section class="panel" aria-labelledby="hConn">
+              <div class="phead"><h2 id="hConn">Connection</h2><span class="lstatus" id="liveStatus">Not connected</span></div>
+              <form class="form" id="liveForm" autocomplete="off">
+                <div class="field full"><label for="host">Machine address</label><input type="text" id="host" placeholder="my-arm-main.abc123.viam.cloud" spellcheck="false"></div>
+                <div class="field"><label for="keyId">API key ID</label><input type="text" id="keyId" placeholder="From the CONNECT tab" spellcheck="false"></div>
+                <div class="field"><label for="key">API key</label><input type="password" id="key" placeholder="Machine API key"></div>
+                <div class="field"><label for="armName">Arm name</label><input type="text" id="armName" placeholder="arm-1" spellcheck="false"></div>
+                <div class="field"><label for="gripperName">Gripper name <span class="opt">optional</span></label><input type="text" id="gripperName" placeholder="gripper-1" spellcheck="false"></div>
+                <div class="formfoot full">
+                  <label class="check"><input type="checkbox" id="remember"> Remember on this computer</label>
+                  <button type="submit" id="btnConnect" class="btn primary">Connect</button>
+                </div>
+              </form>
+            </section>
+            <section class="panel" aria-labelledby="hRoom">
+              <div class="phead"><h2 id="hRoom">Placement</h2></div>
+              <div class="form">
+                <div class="field"><label for="liveRoom">Real arm is in</label><select id="liveRoom"></select></div>
+                <div class="field"><label for="hold">Hold at patient's hand (seconds)</label><input type="number" id="hold" min="1" max="15" step="1"></div>
+                <p class="hint full">Other rooms stay simulated. Requests for this room run on the real arm.</p>
+              </div>
+            </section>
+          </div>
+          <div class="setupcol">
+            <section class="panel" aria-labelledby="hTeach">
+              <div class="phead"><h2 id="hTeach">Teach positions</h2><button id="btnClearPoses" class="btn ghost sm">Clear all</button></div>
+              <div class="tablewrap">
+                <table class="poses">
+                  <thead><tr><th>Position</th><th>Joint angles</th><th>Status</th><th class="r"><span class="sr">Action</span></th></tr></thead>
+                  <tbody id="poseList"></tbody>
+                </table>
+              </div>
+              <div class="pfoot">
+                <span class="hint" id="teachNote"></span>
+                <span class="btnrow"><button id="btnTest" class="btn primary">Test Hand Over</button><button id="btnLiveStop" class="btn danger">Emergency Stop</button></span>
+              </div>
+            </section>
+            <section class="panel" aria-labelledby="hPos">
+              <div class="phead"><h2 id="hPos">Live position</h2><span class="pmeta" id="movingState">No data</span></div>
+              <div class="readout" id="readout"></div>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

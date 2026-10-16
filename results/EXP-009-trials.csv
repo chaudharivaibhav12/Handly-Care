@@ -1,0 +1,7 @@
+time,command,object,from,to,grabbed,error_mm,note
+19:05:38,tissue,tissue_box,"341,282",handoff,1,,ran (outcome not checked)
+19:08:29,tissue,tissue_box,"341,282",handoff,0,,try1: pulled the whole box (not taped)
+19:09:00,tissue,tissue_box,"336,271",handoff,1,,ran (outcome not checked)
+19:09:51,tissue,tissue_box,"336,271",handoff,1,,try2: one tissue handed over (box taped)
+19:19:58,tissue,tissue_box,"337,269",handoff,1,,ran (outcome not checked)
+19:21:15,tissue,tissue_box,"337,269",handoff,1,,"try3: one tissue handed over; chain from high via lean-back, ended with to_high"

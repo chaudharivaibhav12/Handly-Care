@@ -1,0 +1,19 @@
+  tissue_box at (337, 269), 128x127 mm, top 202 mm
+  lean back first: gripper z 496
+  joint 1 -> 107.7: gripper z 498
+  joint 1 -> 92.7: gripper z 498
+  joint 1 -> 89.9: gripper z 498
+  joint 4 -> 30.1: gripper z 495
+  joint 4 -> 15.1: gripper z 494
+  joint 4 -> 0.1: gripper z 493
+  joint 4 -> -14.9: gripper z 493
+  joint 4 -> -29.9: gripper z 495
+  joint 4 -> -33.6: gripper z 496
+  joint 5 -> 40.2: gripper z 453
+  joint 5 -> 53.1: gripper z 421
+  joint 2 -> -16.7: gripper z 311
+  joint 2 -> -1.7: gripper z 198
+  joint 2 -> 1.1: gripper z 175
+  joint 3 -> -50.6: gripper z 195
+tissue: done
+one tissue handed over? (y/n/comment, Enter to skip): 

@@ -1,0 +1,7 @@
+  pill_above: 8.4 s
+  pill_grip: 2.1 s
+  pill_lift -> pill_above: 2.8 s
+  handoff: 4.6 s
+  pill_above -> high: 14.6 s
+pills: done
+did the patient get it? (y/n/comment, Enter to skip): 

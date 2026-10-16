@@ -1,0 +1,164 @@
+// Live connection to a real Viam arm (and optional gripper).
+// Uses only documented SDK calls: createRobotClient, ArmClient
+// (getJointPositions, moveToJointPositions, getEndPosition, isMoving, stop)
+// and GripperClient (open, grab).
+import * as VIAM from '@viamrobotics/sdk';
+
+export const POSES = [
+  { key: 'home',    label: 'Home',             hint: 'Folded, clear of the patient' },
+  { key: 'above',   label: 'Above the item',   hint: '10 cm over the tray spot' },
+  { key: 'pick',    label: 'At the item',      hint: 'Gripper around the item' },
+  { key: 'handoff', label: "Patient's hand",   hint: 'Where the patient takes it' },
+  { key: 'forehead', label: 'Near forehead',   hint: 'Thermometer about 4 cm from the forehead' },
+];
+
+const POSES_KEY = 'bedside-arm-poses';
+const CREDS_KEY = 'bedside-arm-connection';
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const store = {
+  get(k){ try { return JSON.parse(localStorage.getItem(k) || 'null'); } catch { return null; } },
+  set(k, v){ try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+  del(k){ try { localStorage.removeItem(k); } catch {} },
+};
+
+export const live = {
+  status: 'disconnected',   // disconnected | connecting | connected | error
+  error: '',
+  machine: null, arm: null, gripper: null,
+  poses: store.get(POSES_KEY) || {},
+  moving: false, joints: null, pose: null,
+  busy: false, abort: false,
+  _listeners: new Set(), _poll: null, _pollBusy: false, _pollErrors: 0,
+
+  on(fn){ this._listeners.add(fn); },
+  emit(){ this._listeners.forEach(fn => { try { fn(this); } catch (e) { console.error(e); } }); },
+
+  get connected(){ return this.status === 'connected'; },
+  get missingPoses(){ return POSES.filter(p => !this.poses[p.key]).map(p => p.label); },
+  get ready(){ return this.connected && this.missingPoses.length === 0; },
+
+  savedConnection(){ return store.get(CREDS_KEY); },
+
+  async connect(cfg){
+    if (this.status === 'connecting') return;
+    this.status = 'connecting'; this.error = ''; this.emit();
+    try {
+      this.machine = await VIAM.createRobotClient({
+        host: cfg.host.trim(),
+        credentials: { type: 'api-key', authEntity: cfg.keyId.trim(), payload: cfg.key.trim() },
+        signalingAddress: 'https://app.viam.com:443',
+      });
+      this.arm = new VIAM.ArmClient(this.machine, cfg.armName.trim());
+      this.gripper = cfg.gripperName && cfg.gripperName.trim()
+        ? new VIAM.GripperClient(this.machine, cfg.gripperName.trim()) : null;
+      await this.arm.getJointPositions(); // fails fast if the arm name is wrong
+      this.status = 'connected';
+      if (cfg.remember) store.set(CREDS_KEY, cfg); else store.del(CREDS_KEY);
+      this._startPolling();
+    } catch (e) {
+      this.status = 'error';
+      this.error = e && e.message ? e.message : String(e);
+      this.machine = this.arm = this.gripper = null;
+    }
+    this.emit();
+  },
+
+  async disconnect(){
+    this._stopPolling();
+    try { if (this.machine) await this.machine.disconnect(); } catch {}
+    this.machine = this.arm = this.gripper = null;
+    this.status = 'disconnected'; this.moving = false; this.joints = this.pose = null;
+    this.emit();
+  },
+
+  _startPolling(){
+    this._stopPolling();
+    this._poll = setInterval(async () => {
+      if (!this.arm || this._pollBusy) return;
+      this._pollBusy = true;
+      try {
+        const [moving, jp, pose] = await Promise.all([
+          this.arm.isMoving(), this.arm.getJointPositions(), this.arm.getEndPosition(),
+        ]);
+        this.moving = !!moving;
+        this.joints = jp && jp.values ? [...jp.values] : null;
+        this.pose = pose || null;
+        this._pollErrors = 0;
+      } catch (e) {
+        if (++this._pollErrors >= 3) { this.status = 'error'; this.error = 'Lost connection: ' + (e.message || e); this._stopPolling(); }
+      }
+      this._pollBusy = false;
+      this.emit();
+    }, 400);
+  },
+  _stopPolling(){ if (this._poll) clearInterval(this._poll); this._poll = null; },
+
+  async capture(key){
+    if (!this.arm) throw new Error('Connect to the arm first.');
+    const jp = await this.arm.getJointPositions();
+    this.poses[key] = [...jp.values].map(v => Math.round(v * 100) / 100);
+    store.set(POSES_KEY, this.poses);
+    this.emit();
+  },
+  clearPoses(){ this.poses = {}; store.del(POSES_KEY); this.emit(); },
+
+  async _move(key){ await this.arm.moveToJointPositions(this.poses[key]); },
+  async _wait(ms){ const end = Date.now() + ms; while (Date.now() < end) { if (this.abort) throw new Error('Stopped by nurse'); await sleep(100); } },
+
+  // Full hand-over: tray -> patient's hand -> home.
+  async handover({ holdSeconds = 3, onStep = () => {} } = {}){
+    if (!this.ready) throw new Error('Teach all positions first.');
+    if (this.busy) throw new Error('Arm is already working.');
+    this.busy = true; this.abort = false; this.emit();
+    const g = this.gripper;
+    const steps = [
+      ['Opening gripper',            () => g && g.open()],
+      ['Moving above the item',      () => this._move('above')],
+      ['Reaching the item',          () => this._move('pick')],
+      ['Gripping',                   () => g && g.grab()],
+      ['Lifting',                    () => this._move('above')],
+      ["Moving to patient's hand",   () => this._move('handoff')],
+      ['Holding for patient',        () => this._wait(holdSeconds * 1000)],
+      ['Releasing',                  () => g && g.open()],
+      ['Returning home',             () => this._move('home')],
+    ].filter(([, fn], i) => g || ![0, 3, 7].includes(i)); // skip gripper steps without a gripper
+    try {
+      for (let i = 0; i < steps.length; i++) {
+        if (this.abort) throw new Error('Stopped by nurse');
+        onStep(steps[i][0], i / steps.length);
+        await steps[i][1]();
+      }
+      onStep('Done', 1);
+    } finally {
+      this.busy = false; this.emit();
+    }
+  },
+
+  // Temperature check: thermometer is mounted on the arm. Home -> near forehead -> hold -> home.
+  async measure({ readSeconds = 3, onStep = () => {} } = {}){
+    if (!this.ready) throw new Error('Teach all positions first.');
+    if (this.busy) throw new Error('Arm is already working.');
+    this.busy = true; this.abort = false; this.emit();
+    const steps = [
+      ['Announcing temperature check', () => this._wait(1500)],
+      ['Moving slowly near forehead',  () => this._move('forehead')],
+      ['Reading temperature',          () => this._wait(readSeconds * 1000)],
+      ['Returning home',               () => this._move('home')],
+    ];
+    try {
+      for (let i = 0; i < steps.length; i++) {
+        if (this.abort) throw new Error('Stopped by nurse');
+        onStep(steps[i][0], i / steps.length);
+        await steps[i][1]();
+      }
+      onStep('Done', 1);
+    } finally { this.busy = false; this.emit(); }
+  },
+
+  async stop(){
+    this.abort = true;
+    try { if (this.arm) await this.arm.stop(); } catch {}
+    try { if (this.gripper && this.gripper.stop) await this.gripper.stop(); } catch {}
+    this.emit();
+  },
+};

@@ -1,0 +1,8 @@
+
+👤 Put the green block next to the blue block
+🤖 Moving the green toy rocket next to the blue toy rocket.
+   moving green_toy_rocket from (283, 51) to next_to:blue_toy_rocket at (456, -12)
+  high carry refused (Failures: { robot constraint: violation between cam_origin and wall-front:wall-front geometries: 78.72% }, { obstacle constraint: violation between arm:upper_forearm and wooden_toy_figure geometries: 21.28% }, ', None)); carrying at the normal height
+  carry refused (Failures: { obstacle constraint: violation between gripper:claws and wooden_toy_figure geometries: 100.00% }, ', None)); putting the green_toy_rocket back
+⚠️  I couldn't find a safe path for the green toy rocket (no safe path to there, so I put the green_toy_rocket back).
+✅ All done.

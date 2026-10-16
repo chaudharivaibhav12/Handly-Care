@@ -1,0 +1,14 @@
+time,command,object,from,to,grabbed,error_mm,note
+12:19:08,test,red_cube,slot1,slot2,1,,y
+12:19:26,test,red_cube,slot2,slot1,1,,y
+12:20:49,test,red_cube,slot1,slot2,1,,y
+12:21:07,test,red_cube,slot2,slot1,1,,y
+12:21:26,test,red_cube,slot1,slot2,1,,y
+12:21:47,test,red_cube,slot1,slot2,0,,EMPTY-GRAB check: no cube on purpose; correctly reported missed
+12:33:28,test,red_cube,slot1,slot2,1,,y
+14:23:00,pick,brown_object,"193,162",tray,1,49.1,
+14:24:46,pick,brown_object_2,"161,575",right,0,235.9,
+14:32:11,pick,brown_object,"385,409",left,1,15.9,
+14:32:41,pick,brown_object,"403,219",to_me,1,6.5,
+14:33:29,pick,brown_object,"387,408",left,1,19.2,
+14:33:56,pick,brown_object,"404,213",to_me,1,7.7,

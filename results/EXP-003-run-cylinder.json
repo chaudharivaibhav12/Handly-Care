@@ -1,0 +1,64 @@
+{
+ "runs": [
+  {
+   "brown_object": [
+    353.3,
+    407.5
+   ]
+  },
+  {
+   "brown_object": [
+    354.2,
+    408.3
+   ],
+   "brown_object_2": [
+    61.2,
+    158.8
+   ]
+  },
+  {
+   "brown_object": [
+    354.2,
+    406.7
+   ],
+   "brown_object_2": [
+    63.8,
+    157.5
+   ]
+  }
+ ],
+ "summary": {
+  "brown_object": {
+   "seen": "3/3",
+   "mean": [
+    353.90000000000003,
+    407.5
+   ],
+   "max_dev_mm": 0.8544003745317478,
+   "size": [
+    42.1,
+    37.9,
+    56.5
+   ],
+   "grasp_height": 28.2,
+   "graspable": true,
+   "why_not": ""
+  },
+  "brown_object_2": {
+   "seen": "2/3",
+   "mean": [
+    62.5,
+    158.15
+   ],
+   "max_dev_mm": 1.4534441853748632,
+   "size": [
+    26.2,
+    22.5,
+    23.6
+   ],
+   "grasp_height": 11.8,
+   "graspable": true,
+   "why_not": ""
+  }
+ }
+}

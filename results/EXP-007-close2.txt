@@ -1,0 +1,6 @@
+  high -> retreat: 3.4 s
+2026-10-16 17:38:40,994		[33;31mERROR[0m	viam (__init__.py:34)	[ERROR] Uncaught exception	
+Traceback (most recent call last):
+grpclib.exceptions.GRPCError: (<Status.CANCELLED: 1>, 'context canceled', None)
+Traceback (most recent call last):
+grpclib.exceptions.GRPCError: (<Status.CANCELLED: 1>, 'context canceled', None)

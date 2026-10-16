@@ -1,0 +1,10 @@
+  high -> approach: 4.7 s
+  grip: 0.9 s
+  pull1 -> pull2 -> open: 2.2 s
+  retreat -> high: 3.9 s
+drawer open: slid 108 mm
+did it open/close fully? (y/n/comment, Enter to skip): 2026-10-16 17:25:44,938		[33;31mERROR[0m	viam (__init__.py:34)	[ERROR] Uncaught exception	
+Traceback (most recent call last):
+EOFError: EOF when reading a line
+Traceback (most recent call last):
+EOFError: EOF when reading a line

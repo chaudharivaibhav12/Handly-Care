@@ -1,0 +1,3 @@
+  tilted, high above the knob: 2.2 s
+  approach refused ((<Status.UNKNOWN: 2>, 'linear with cbirrt not allowed and no direct solutions found', None))
+couldn't open the drawer: no safe path to the drawer knob

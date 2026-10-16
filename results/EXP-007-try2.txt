@@ -1,0 +1,73 @@
+2026-10-16 16:59:38,459		[33;31mERROR[0m	viam (__init__.py:34)	[ERROR] Uncaught exception	
+Traceback (most recent call last):
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 344, in <module>
+    sys.exit(0 if asyncio.run(main()) else 1)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 331, in main
+    return await run_command(robot, args.command)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 203, in run_command
+    moved = await robot.drawer(cmd[1])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 255, in drawer
+    await self.gripper.open()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\viam\components\gripper\client.py", line 54, in open
+    await self.client.Open(request, timeout=timeout, metadata=md)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 911, in __call__
+    async with self.open(timeout=timeout, metadata=metadata) as stream:
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 564, in __aexit__
+    raise exc_val
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 554, in __aexit__
+    await self._maybe_finish()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 524, in _maybe_finish
+    await self.recv_trailing_metadata()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 485, in recv_trailing_metadata
+    self._raise_for_grpc_status(status, message, details)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 346, in _raise_for_grpc_status
+    raise GRPCError(status, message, details)
+grpclib.exceptions.GRPCError: (<Status.UNKNOWN: 2>, 'xArm: Emergency Stop Button Pushed In; ', None)
+Traceback (most recent call last):
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 344, in <module>
+    sys.exit(0 if asyncio.run(main()) else 1)
+                  ^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 190, in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\asyncio\base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 331, in main
+    return await run_command(robot, args.command)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\app.py", line 203, in run_command
+    moved = await robot.drawer(cmd[1])
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\robot.py", line 255, in drawer
+    await self.gripper.open()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\viam\components\gripper\client.py", line 54, in open
+    await self.client.Open(request, timeout=timeout, metadata=md)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 911, in __call__
+    async with self.open(timeout=timeout, metadata=metadata) as stream:
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 564, in __aexit__
+    raise exc_val
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 554, in __aexit__
+    await self._maybe_finish()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 524, in _maybe_finish
+    await self.recv_trailing_metadata()
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 485, in recv_trailing_metadata
+    self._raise_for_grpc_status(status, message, details)
+  File "C:\Users\babbe\OneDrive\Desktop\NYU\Github\Viam-Hack\sidekick\.venv\Lib\site-packages\grpclib\client.py", line 346, in _raise_for_grpc_status
+    raise GRPCError(status, message, details)
+grpclib.exceptions.GRPCError: (<Status.UNKNOWN: 2>, 'xArm: Emergency Stop Button Pushed In; ', None)

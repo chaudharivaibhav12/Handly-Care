@@ -1,0 +1,6 @@
+  high -> approach: 4.1 s
+  grip: 0.9 s
+  pull1 -> pull2 -> open: 2.1 s
+  retreat -> high: 4.0 s
+drawer open: slid 108 mm
+did it open/close fully? (y/n/comment, Enter to skip): 
