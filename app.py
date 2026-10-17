@@ -30,6 +30,7 @@ import sys
 import threading
 
 import math
+import os
 import random
 import signal
 
@@ -297,7 +298,7 @@ async def run_command(robot, cmd):
 
 def ask_note(prompt):
     """Ask the operator for a trial note; never crash without a keyboard (Fri 5:25: EOFError lost a drawer trial)."""
-    if not sys.stdin.isatty():
+    if not sys.stdin.isatty() or os.environ.get("SIDEKICK_NO_PROMPT"):   # bridge.py: NUL looks like a TTY on Windows
         return ""
     try:
         return input(prompt).strip()

@@ -38,6 +38,9 @@ S = fresh();
 let view = 'overview';
 
 const $ = id => document.getElementById(id);
+// Redraw only on change: the bridge poll re-renders twice a second, and replacing a button between
+// mouse-down and mouse-up swallows the click (Fri 8:10 PM: Tissue 'Run' did nothing after Medicine).
+function setHTML(id, html){ const el = $(id); if (el && el._html !== html) { el.innerHTML = html; el._html = html; } }
 const esc = s => String(s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function clock(){ const s=Math.floor(START_SEC + S.sim/1000*CLOCK_RATIO)%86400; const h=Math.floor(s/3600), m=Math.floor(s%3600/60); return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0'); }
 function after(ms, fn){ S.jobs.push({at:S.sim+ms, fn}); }
@@ -173,7 +176,7 @@ function renderQueue(){
 function renderArms(){
   const hotRooms = new Set(S.queue.filter(q=>q.sev==='critical').map(q=>q.room));
   const openBy = {}; S.queue.forEach(q=>{ if(!openBy[q.room]||SEV_ORDER[q.sev]<SEV_ORDER[openBy[q.room].sev]) openBy[q.room]=q; });
-  $('armRows').innerHTML = ROOMS.map(({n})=>{
+  setHTML('armRows', ROOMS.map(({n})=>{
     const r = S.rooms[n]; const open = openBy[n]; const hot = hotRooms.has(n);
     const isLiveRoom = n === settings.room && live.connected;
     const state = r.arm==='working' ? '<span class="b arm">Working</span>'
@@ -197,7 +200,7 @@ function renderArms(){
       <td class="task">${task}${pose}</td>
       <td class="r">${btn}</td>
     </tr>`;
-  }).join('');
+  }).join(''));
   const working = ROOMS.filter(r=>S.rooms[r.n].arm==='working').length;
   $('armCount').textContent = '3 online' + (working? ' · '+working+' working':'');
   tickBars();
@@ -251,15 +254,14 @@ function renderLive(){
   const st = live.status;
   $('liveDot').className = 'ldot ' + st; $('navDot').className = 'ldot ' + st;
   $('btnLiveText').textContent = st==='connected' ? 'Arm connected' : (st==='connecting' ? 'Connecting…' : 'Connect Arm');
-  $('liveStatus').innerHTML = `<span class="ldot ${st}"></span>` + esc(STATUS_TEXT[st] + (st==='error' && live.error ? ': ' + live.error : ''));
+  setHTML('liveStatus', `<span class="ldot ${st}"></span>` + esc(STATUS_TEXT[st] + (st==='error' && live.error ? ': ' + live.error : '')) + (st==='connected' && live.sim ? ' · <b>SIMULATED arm</b>' : ''));
   $('liveStatus').className = 'lstatus ' + st;
   $('btnConnect').textContent = st==='connected' ? 'Disconnect' : (st==='connecting' ? 'Connecting…' : 'Connect');
   $('btnConnect').className = st==='connected' ? 'btn' : 'btn primary';
   $('btnConnect').disabled = st==='connecting';
-  if (st==='connected' && live.sim) $('liveStatus').innerHTML += ' · <b>SIMULATED arm</b>';
 
   const res = live.result;
-  $('poseList').innerHTML = POSES.map(p => {
+  setHTML('poseList', POSES.map(p => {
     const now = live.busy && live.task===p.key;
     const mine = res && res.task===p.key;
     const last = mine ? (res.ok ? `<span class="b ok">Done · ${res.seconds} s</span>` : '<span class="b stopped">Failed</span>') : '<span class="b">—</span>';
@@ -269,15 +271,15 @@ function renderLive(){
       <td>${now?'<span class="b arm">Running</span>':last}</td>
       <td class="r"><button class="btn sm" data-capture="${p.key}" ${live.connected && !live.busy ? '' : 'disabled'}>Run</button></td>
     </tr>`;
-  }).join('');
+  }).join(''));
   $('teachNote').textContent = !live.connected ? 'Start the bridge on this laptop (python bridge.py), then Connect.'
     : 'Room ' + settings.room + ' runs on the real arm. Medicine and tissue requests use these routines.';
   $('btnTest').disabled = !live.ready || live.busy;
   $('btnLiveStop').disabled = !live.connected;
-  $('movingState').innerHTML = live.connected ? (live.busy ? '<span style="color:var(--teal);font-weight:500">Running '+esc(live.task)+'</span>' : 'Idle') : 'No data';
-  $('readout').innerHTML = live.connected && live.lines.length
+  setHTML('movingState', live.connected ? (live.busy ? '<span style="color:var(--teal);font-weight:500">Running '+esc(live.task)+'</span>' : 'Idle') : 'No data');
+  setHTML('readout', live.connected && live.lines.length
     ? `<pre class="armout">${esc(live.lines.join('\n'))}</pre>`
-    : `<div class="nodata">${live.connected ? 'No runs yet.' : 'Connect to see the arm output.'}</div>`;
+    : `<div class="nodata">${live.connected ? 'No runs yet.' : 'Connect to see the arm output.'}</div>`);
 }
 
 // A routine with no hand-over (start pose): runs from Arm Setup only, after the nurse confirms.

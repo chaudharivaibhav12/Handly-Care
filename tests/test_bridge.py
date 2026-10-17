@@ -157,3 +157,15 @@ def test_sim_runs_never_touch_the_real_trials(tmp_path):
     assert "medicine: done" in out.stdout, out.stdout + out.stderr
     after = open(real, "rb").read() if os.path.exists(real) else None
     assert after == before
+
+
+def test_output_is_clean_and_app_never_asks():
+    # Fri 8:10 PM: the panel showed Viam's color codes and ended on "did the patient get it? (y/n...)"
+    # (NUL stdin looks like a TTY on Windows, so app.py asked a question nobody could answer).
+    script = ("import os, app; print('\x1b[33;36mINFO\x1b[0m dial'); "
+              "print('note=' + repr(app.ask_note('did the patient get it? ')))")
+    r = bridge.Runner(routines={"run": (["run"], 5, [("", "Running")])},
+                      command=lambda args: [sys.executable, "-c", script])
+    r.start("run")
+    s = wait_result(r)
+    assert s["lines"] == ["INFO dial", "note=''"]

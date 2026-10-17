@@ -10,6 +10,7 @@ Stop = Ctrl+Break to the run, so app.py stops the arm on its own connection (the
 import argparse
 import json
 import os
+import re
 import signal
 import subprocess
 import sys
@@ -17,6 +18,7 @@ import threading
 import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 
+ANSI = re.compile(r"\x1b\[[0-9;]*m")   # Viam log colors
 ROOT = os.path.dirname(os.path.abspath(__file__))
 WEB = os.path.join(ROOT, "handly-care")
 PORT = 8765
@@ -72,7 +74,7 @@ class Runner:
                 raise RuntimeError(f"the arm is busy with '{self.task}'")
             args, _, phases = self.routines[name]
             flags = getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0)     # so Stop can send Ctrl+Break
-            env = dict(os.environ, PYTHONIOENCODING="utf-8")
+            env = dict(os.environ, PYTHONIOENCODING="utf-8", SIDEKICK_NO_PROMPT="1")   # no y/n question: nobody can answer it
             self.proc = subprocess.Popen(self.command(args), cwd=ROOT, stdin=subprocess.DEVNULL,
                                          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True,
                                          encoding="utf-8", errors="replace", creationflags=flags, env=env)
@@ -84,7 +86,7 @@ class Runner:
 
     def _read(self, proc, run_id, phases):
         for raw in proc.stdout:
-            line = raw.rstrip()
+            line = ANSI.sub("", raw).rstrip()
             if not line.strip():
                 continue
             with self.lock:
