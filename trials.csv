@@ -74,3 +74,6 @@ time,command,object,from,to,grabbed,error_mm,note
 19:22:27,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
 19:23:02,medicine,pill_box,drawer,handoff,1,,rehearsal 7:21 right after tissue: all good (Vaibhav)
 20:39:47,drawer,middle_drawer,,close,1,,y
+10:16:21,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+10:18:12,tissue,tissue_box,"339,270",handoff,1,,ran (outcome not checked)
+10:19:40,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)

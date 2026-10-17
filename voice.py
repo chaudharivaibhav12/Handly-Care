@@ -9,29 +9,32 @@ import re
 import config
 import planner
 
-ACTIONS = ("medicine", "tissue", "to_high", "none")
+ACTIONS = ("medicine", "tissue", "thermometer", "to_high", "none")
 VOICE_TIMEOUT_S = 8.0           # the person is waiting; keywords answer if Claude is slow
 STOP_RE = re.compile(r"\b(stop|halt|freeze)\b", re.I)                 # anywhere in the sentence
 SHORT_STOP_RE = re.compile(r"\b(wait|no|don'?t)\b", re.I)            # only in a short one ("no, wait!"), not "no rush"
 KEYWORDS = [   # (pattern, action): first match wins
     (re.compile(r"\b(pills?|medicines?|medications?|meds|tablets?|pill ?box|drugs?)\b", re.I), "medicine"),
     (re.compile(r"\b(tissues?|kleenex|nose|sneez\w*|napkin)\b", re.I), "tissue"),
+    (re.compile(r"\b(temperature|thermometer|fever|feel (hot|warm))\b", re.I), "thermometer"),
     (re.compile(r"\b(start(ing)? (pose|position)|reset|go back)\b", re.I), "to_high"),
 ]
 REPLIES = {
     "medicine": "Getting your medicine now.",
     "tissue": "Getting you a tissue.",
+    "thermometer": "Let me check your temperature.",
     "to_high": "Moving back to my start pose.",
-    "none": "Sorry, I can only bring your medicine or a tissue. I'll let your nurse know.",
+    "none": "Sorry, I can only bring your medicine or a tissue, or check your temperature. I'll let your nurse know.",
 }
 
 SYSTEM = """You are the voice of a bedside robot arm helping a patient with limited hand mobility.
 It can do exactly these routines and nothing else:
 - medicine: open the drawer, take out the nurse-prepared pill box, hand it to the patient
 - tissue: pull one tissue from the box and hand it to the patient
+- thermometer: take a temperature reading with the no-contact thermometer (e.g. 'I feel hot', 'check my temperature')
 - to_high: move the arm back to its start pose
 - none: anything else (water, food, getting up, pain, emergencies, unclear requests) -> no movement
-Reply with ONLY a JSON object: {"action": "<medicine|tissue|to_high|none>", "say": "<one short, warm sentence to speak, max 15 words>"}
+Reply with ONLY a JSON object: {"action": "<medicine|tissue|thermometer|to_high|none>", "say": "<one short, warm sentence to speak, max 15 words>"}
 For "none", say briefly that you can't do it and that the nurse will be told. Never promise anything outside the list."""
 
 

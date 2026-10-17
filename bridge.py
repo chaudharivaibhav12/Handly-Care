@@ -38,6 +38,11 @@ ROUTINES = {
         ("joint", "Returning to the start pose"),
     ]),
     "to_high": (["to_high"], 30, [("", "Moving to the start pose")]),
+    "thermometer": (["thermometer"], 35, [
+        ("", "Picking up the thermometer"),
+        ("therm_aim", "Measuring"),
+        ("therm_above -> high", "Putting it back"),
+    ]),
 }
 
 

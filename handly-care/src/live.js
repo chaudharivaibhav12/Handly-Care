@@ -5,6 +5,7 @@
 export const POSES = [   // the real arm's routines (shown in Arm Setup)
   { key: 'medicine', label: 'Medicine',        hint: 'Open the drawer, hand over the pill box, close it (~60 s). Drawer SHUT before.' },
   { key: 'tissue',   label: 'Tissue',          hint: 'Find the tissue box, hand over one tissue, end at the start pose (~75 s).' },
+  { key: 'thermometer', label: 'Thermometer', hint: 'Pick up the thermometer, point it at the ball (light), put it back (~30 s).' },
   { key: 'to_high',  label: 'Start pose',      hint: "Bring the arm to 'high' from anywhere, one joint at a time." },
 ];
 
@@ -13,6 +14,7 @@ const CHECKS = {
   medicine: 'Drawer SHUT, pill box on its spot, arm at the start pose, hand on the E-stop.',
   tissue:   'Tissue box TAPED down with a tissue sticking up, arm at the start pose, hand on the E-stop.',
   to_high:  'Path clear around the arm, hand on the E-stop.',
+  thermometer: 'Thermometer on its taped spot, ball on its spot, nobody in the swing path, arm at the start pose, hand on the E-stop.',
 };
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -43,7 +45,7 @@ export const live = {
 
   // Which routine does a dashboard request run on the real arm? null = not a real-arm task (stays simulated).
   taskFor(item, kind){
-    if (kind === 'temp') return null;                    // thermometer: not built yet
+    if (kind === 'temp') return 'thermometer';
     const s = String(item || '').toLowerCase();
     if (s.includes('pill') || s.includes('medic')) return 'medicine';
     if (s.includes('tissue')) return 'tissue';
@@ -98,7 +100,7 @@ export const live = {
     if (!task) return Promise.reject(new Error('No real-arm routine for ' + item));
     return this.run(task, { onStep });
   },
-  measure(){ return Promise.reject(new Error('Thermometer is not built yet.')); },
+  measure({ onStep } = {}){ return this.run('thermometer', { onStep }); },
 
   // A spoken request -> {action: medicine|tissue|to_high|none|stop|busy, say, source}. "stop" stops at once;
   // nothing else moves the arm by itself (the page asks the nurse first).

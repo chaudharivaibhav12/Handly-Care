@@ -191,6 +191,15 @@ DRAWER_MAX_ACC_DEGS = 30.0
 TISSUE_GRIP_BELOW_TOP_MM = 15.0   # fingertips this far below the measured top (the tissue puff), above the cardboard
 TISSUE_PULL_MM = 250.0            # straight up this far: a pop-up tissue slides out whole
 HANDOFF_HOLD_S = 3.0           # hold the item at the patient's hand this long before letting go
+# Thermometer (Sat): IR thermometer on a taped spot, ball on a taped spot; the light on the ball shows it works.
+# Its button is one click; held down, the light goes off after ~2 s.
+THERM_MODE = "press"            # "press": hold gently, click at the ball (needs the 2 positions below); "fast": the grip clicks, swing fast
+THERM_HOLD_POS = None           # TODO measure: xArm gripper position (0 closed .. 850 open) that holds it WITHOUT pressing the button
+THERM_PRESS_POS = None          # TODO measure: a bit tighter, clicks the button
+THERM_SHOW_S = 2.0              # keep pointing at the ball this long
+THERM_GRIPPER_SETTLE_S = 0.6    # wait after a gripper position change
+THERM_FAST_VEL_DEGS = 60.0      # "fast" mode swing grip -> aim; 120 after a clean run (arm config speed must allow it)
+THERM_FAST_ACC_DEGS = 300.0
 DRAWER_CLOSE_SHORT_MM = 10.0
 DRAWER_EXTRA_OPEN_MM = 30.0    # pull this far past the taught 'open' (6:31 PM: wanted ~3 cm more); 0 = as taught   # close stops this short of 'grip' (5:35 PM: full close pushed the box back ~1 cm)
 DRAWER_MAX_FIRST_JUMP_DEG = 45.0

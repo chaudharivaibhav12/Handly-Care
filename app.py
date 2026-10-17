@@ -15,6 +15,7 @@
     python app.py pills | medicine          # take the pill box out of the open drawer and hand it over (+ open/close)
     python app.py tissue [name]             # look, pinch one tissue from the pop-up box, hand it over, end at 'high'
     python app.py to_high                   # safely to the drawer's 'high' pose, one joint at a time
+    python app.py thermometer               # from 'high': pick up the thermometer, point it at the ball, put it back
     python app.py objects               # what the camera sees, in world mm (Milestone 2)
     python app.py calibrate red_cube=slot1 blue_cube=slot2 cup=slot3
                                         # objects placed on taught spots -> camera correction
@@ -286,6 +287,22 @@ async def run_command(robot, cmd):
         print(f"{cmd[0]}: done")
         note = ask_note("did the patient get it? (y/n/comment, Enter to skip): ")
         trials.log(cmd[0], "pill_box", "drawer", "handoff", True, None, note=note or "ran (outcome not checked)")
+        return True
+    elif cmd[0] == "thermometer" and len(cmd) == 1:
+        # From 'high': pick up the IR thermometer, point it at the ball (light visible), put it back.
+        try:
+            await robot.thermometer()
+        except KeyError as e:
+            print(f"can't do that yet: {e.args[0]}")
+            return False
+        except MoveError as e:
+            print(f"stopped: {e}")
+            trials.log("thermometer", "thermometer", "therm_spot", "ball", False, None, note=f"move error: {e}")
+            return False
+        print("thermometer: done")
+        note = ask_note("light seen on the ball? (y/n/comment, Enter to skip): ")
+        trials.log("thermometer", "thermometer", "therm_spot", "ball", True, None,
+                   note=note or f"ran, mode {config.THERM_MODE} (outcome not checked)")
         return True
     elif cmd[0] == "stats":
         print(trials.report())

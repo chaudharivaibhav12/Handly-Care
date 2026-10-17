@@ -26,6 +26,9 @@ import config
 
 REQUIRED = ("high", "approach", "grip", "open", "retreat")
 PILLS_REQUIRED = ("high", "pill_above", "pill_grip", "handoff")
+# Thermometer (Sat): therm_above = fingers open over the thermometer on its taped spot; therm_grip = fingers
+# around it (button between the fingers); therm_aim = held, pointing at the ball (never at a person).
+THERM_REQUIRED = ("high", "therm_above", "therm_grip", "therm_aim")
 
 
 def load():
@@ -120,3 +123,25 @@ def pills_sequence(data, hold_s=3.0):
             ("wait", [hold_s]),
             ("release", []),
             ("move", ["pill_above", "high"])]
+
+
+def therm_sequence(data, mode="press", show_s=2.0, hold_pos=None, press_pos=None):
+    """Thermometer from its taped spot to pointing at the ball and back. Its button is one click, and the light
+    goes off ~2 s later if the button stays pressed (Vaibhav, Sat 12 AM), so:
+      press: gripper to hold_pos (holds the body, button NOT pressed) -> normal speed to therm_aim ->
+             press_pos (clicks) -> show -> back to hold_pos (lets the button go) -> put it back
+      fast:  grab (the grip clicks the button) -> ONE fast move grip -> aim -> show -> put it back"""
+    missing = [n for n in THERM_REQUIRED if n not in data]
+    if missing:
+        raise KeyError(f"teach these first with `python app.py joints <name>`: {', '.join(missing)}")
+    back = [("move", ["therm_grip"]), ("release", []), ("move", ["therm_above", "high"])]
+    if mode == "fast":
+        return [("release", []), ("move", ["therm_above"]), ("move", ["therm_grip"]), ("grab", []),
+                ("fast", ["therm_aim"]), ("wait", [show_s])] + back
+    if mode != "press":
+        raise ValueError(f"THERM_MODE must be 'press' or 'fast', not {mode!r}")
+    if hold_pos is None or press_pos is None:
+        raise KeyError("measure THERM_HOLD_POS and THERM_PRESS_POS first with tools/gripper_pos.py "
+                       "(or set THERM_MODE = 'fast')")
+    return [("release", []), ("move", ["therm_above"]), ("move", ["therm_grip"]), ("set", [hold_pos]),
+            ("move", ["therm_aim"]), ("set", [press_pos]), ("wait", [show_s]), ("set", [hold_pos])] + back

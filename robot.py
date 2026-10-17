@@ -293,10 +293,13 @@ class RealRobot:
             raise MoveError(f"I'm too far from the start pose ({jump:.0f} deg on one joint); "
                             f"move me near 'high' first", holding=False)
 
-        async def through(names):
+        fast = MoveOptions(max_vel_degs_per_sec=config.THERM_FAST_VEL_DEGS,
+                           max_acc_degs_per_sec2=config.THERM_FAST_ACC_DEGS)
+
+        async def through(names, o=opts):
             # Fri 5:38: 'context canceled' (connection drop) stopped a close halfway. Same target = safe to resend.
             await retry("joint move", lambda: self.arm.move_through_joint_positions(
-                [JointPositions(values=data[n]["joints"]) for n in names], options=opts), delay=self.retry_delay)
+                [JointPositions(values=data[n]["joints"]) for n in names], options=o), delay=self.retry_delay)
 
         t0 = time.time()
         for kind, args in steps:
@@ -304,6 +307,15 @@ class RealRobot:
                 await self.gripper.open()
             elif kind == "grab":
                 await self.gripper.grab()
+            elif kind == "set":
+                # xArm gripper position, 0 (closed) .. 850 (open), as last month's winner used it
+                await self.gripper.do_command({"set": int(args[0])})
+                await asyncio.sleep(config.THERM_GRIPPER_SETTLE_S)
+                print(f"  gripper -> {int(args[0])}")
+            elif kind == "fast":
+                await through(args, fast)
+                print(f"  FAST {' -> '.join(args)}: {time.time() - t0:.1f} s")
+                t0 = time.time()
             elif kind == "grab?":
                 held = await self.gripper.grab()
                 if config.TRUST_GRAB_SENSOR and not held:
@@ -418,6 +430,15 @@ class RealRobot:
         data = taught.load()
         await self.replay(data, taught.pills_sequence(data, hold_s))
 
+    async def thermometer(self):
+        """Arm at 'high': pick the IR thermometer off its taped spot, point it at the ball so its light shows,
+        put it back. Mode "press" (THERM_MODE): hold it gently, click the button only at the ball.
+        Mode "fast": the grip itself clicks the button (light goes off ~2 s later), so swing fast to the ball."""
+        import taught
+        data = taught.load()
+        await self.replay(data, taught.therm_sequence(data, config.THERM_MODE, config.THERM_SHOW_S,
+                                                      config.THERM_HOLD_POS, config.THERM_PRESS_POS))
+
     async def stop(self):
         """Emergency-style stop for Ctrl+C. Each call is best effort."""
         for part in (self.arm, self.gripper):
@@ -497,6 +518,9 @@ class SimRobot:
 
     async def tissue(self, box_xy, top_h, others=None, hold_s=3.0):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["tissue"]
+
+    async def thermometer(self):
+        self.drawer_moves = getattr(self, "drawer_moves", []) + ["thermometer"]
 
     async def to_high(self, log=print):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["to_high"]
