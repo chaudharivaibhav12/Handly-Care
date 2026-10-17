@@ -106,9 +106,10 @@ const SCRIPT = [
   ()=>{ log('12','Patient','Voice request: "Could I have a tissue?"');
         log('12','System','Routine request. Sent to arm.');
         armTask('12','tissue',{requestedAt:S.sim-600}); },
-  // 2. Pill box: nurse-prepared, nurse releases, arm hands it over
-  ()=>{ log('12','System','03:00 medication box is due.');
-        addItem({sev:'approve', room:'12', title:'03:00 meds ready to hand over', detail:'Pill box prepared and verified by R. Alvarez, RN at 7:15pm · Acetaminophen, docusate', acts:[['Release pill box','release','primary'],['Hold','hold','']]}); renderAll(); },
+  // 2. Pill box: nurse-prepared and released ahead of time, so the arm hands it over right after the tissue
+  //    (Vaibhav, Sat 11:50: no Release click in the demo; the confirm box before the run stays)
+  ()=>{ log('12','System','03:00 medication box is due. Released in advance by R. Alvarez, RN at 7:15pm · Acetaminophen, docusate.');
+        armTask('12','pill box',{lastLabel:'Pill box', doneText:'Handed nurse-prepared pill box to '+S.rooms['12'].pt+'. Logged to MAR'}); },
   // Risk: respiratory depression in another room, nurse only
   ()=>{ log('11','Alert','SpO₂ 88% and falling. Arm actions locked for this room.');
         addItem({sev:'critical', room:'11', title:'SpO₂ 88% and falling', detail:'Sleep apnea · opioid at 01:15 · RR 8 · hard to wake · was 95% at 01:40', acts:[['On my way','enroute','danger']]}); renderAll(); },
