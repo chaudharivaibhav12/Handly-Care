@@ -21,12 +21,14 @@ cup. It's driven from a nurse-station web dashboard and by voice.
 
 ## 1. Viam: what we used from the platform
 
-**The machine (provided by the hackathon, "armfarm13", configured in the Viam app)**
-| Resource | Viam model / where it comes from | What we use it for |
+**The machine (set up for us by Viam, "armfarm13")**. We only saw the resource names (`arm`, `gripper`, `cam`,
+`builtin`, obstacle geometries). The model names below come from **Viam's kickoff talk** (docs/viam-kickoff-notes.md);
+we did **not** check them in the machine's config.
+| Resource | Model per the kickoff notes (unverified) | What we use it for |
 |---|---|---|
-| `arm` | `viam:ufactory:xArm6`, a Viam registry module (UFactory) | every movement |
-| `gripper` | `viam:ufactory:gripper`, registry module | open / grab, and **position control** via `do_command({"set": 0..850})` (thermometer click, bottle hold) |
-| `cam` | `viam:camera:realsense`, registry module (Intel RealSense D435 on the wrist) | color images + **depth point cloud** |
+| `arm` | `viam:ufactory:xArm6` (or xArm850) | every movement |
+| `gripper` | `viam:ufactory:gripper` | open / grab, and **position control** via `do_command({"set": 0..850})` (thermometer click, bottle hold; ran on the arm Sat 11:21, LOG) |
+| `cam` | `viam:camera:realsense` (Intel RealSense D435 on the wrist) | color images + **depth point cloud** |
 | `builtin` motion service | built into viam-server | collision-aware path planning |
 | `table`, `wall-front`, `wall-side`, `ceiling` | obstacle geometries in the machine's frame system | the planner keeps the arm out of them |
 
