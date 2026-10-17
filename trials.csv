@@ -96,3 +96,6 @@ time,command,object,from,to,grabbed,error_mm,note
 12:58:30,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
 12:58:48,thermometer,thermometer,therm_spot,ball,1,,"ran, mode press (outcome not checked)"
 12:59:49,tissue,tissue_box,"331,270",handoff,1,,ran (outcome not checked)
+13:15:37,tissue,tissue_box,"339,278",handoff,1,,ran (outcome not checked)
+13:16:34,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+13:16:53,thermometer,thermometer,therm_spot,ball,1,,"ran, mode press (outcome not checked)"

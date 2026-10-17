@@ -354,6 +354,20 @@ class RealRobot:
                 await through(args, fast)
                 print(f"  FAST {' -> '.join(args)}: {time.time() - t0:.1f} s")
                 t0 = time.time()
+            elif kind == "turned":
+                # A taught pose with the last wrist joint turned by `deg` (the cap twist). xArm6 joint 6: +-360 deg.
+                name, deg = args
+                j = list(data[name]["joints"])
+                j[5] += deg
+                if abs(j[5]) > config.WRIST_LIMIT_DEG:
+                    raise MoveError(f"twisting to {j[5]:.0f} deg would pass the wrist limit; re-teach "
+                                    f"'{name}' with the wrist turned the other way", holding=False)
+                twist = MoveOptions(max_vel_degs_per_sec=config.CAP_TWIST_VEL_DEGS,
+                                    max_acc_degs_per_sec2=config.CAP_TWIST_ACC_DEGS)
+                await retry("twist", lambda: self.arm.move_through_joint_positions(
+                    [JointPositions(values=j)], options=twist), delay=self.retry_delay)
+                print(f"  {name} wrist {deg:+.0f}: {time.time() - t0:.1f} s")
+                t0 = time.time()
             elif kind == "grab?":
                 held = await self.gripper.grab()
                 if config.TRUST_GRAB_SENSOR and not held:
@@ -488,6 +502,13 @@ class RealRobot:
         data = taught.load()
         await self.replay(data, taught.pills_sequence(data, hold_s))
 
+    async def cap(self):
+        """Arm at 'high': unscrew a bottle cap (a person holds the bottle) by CAP_TWISTS re-grip twists of
+        CAP_TWIST_DEG each, then lift the cap off and keep holding it above the bottle (Sat 1:35 PM)."""
+        import taught
+        data = taught.load()
+        await self.replay(data, taught.cap_sequence(data, config.CAP_TWISTS, config.CAP_TWIST_DEG))
+
     async def thermometer(self):
         """Arm at 'high': pick the IR thermometer off its taped spot, point it at the ball so its light shows,
         put it back. Mode "press" (THERM_MODE): hold it gently, click the button only at the ball.
@@ -580,6 +601,9 @@ class SimRobot:
 
     async def thermometer(self):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["thermometer"]
+
+    async def cap(self):
+        self.drawer_moves = getattr(self, "drawer_moves", []) + ["cap"]
 
     async def to_high(self, log=print):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["to_high"]

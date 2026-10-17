@@ -146,3 +146,23 @@ def therm_sequence(data, mode="press", show_s=2.0, hold_pos=None, press_pos=None
                        "(or set THERM_MODE = 'fast')")
     return [("release", []), ("move", ["therm_above"]), ("move", ["therm_grip"]), ("set", [hold_pos]),
             ("move", ["therm_aim"]), ("click", [press_pos, hold_pos, click_s]), ("wait", [show_s])] + back
+
+
+# Bottle cap (Sat 1:35 PM): a person holds the bottle upright on its spot.
+#   cap_above  fingers open, tool pointing down, a few cm straight above the cap, centered on it
+#   cap_grip   straight down from cap_above, fingers around the cap (not squeezed)
+CAP_REQUIRED = ("high", "cap_above", "cap_grip")
+
+
+def cap_sequence(data, twists=3, deg=-120.0):
+    """Unscrew like a hand does: grip, twist, let go, turn back, grip again. On the last twist keep hold and lift
+    straight up with the wrist still turned (turning back while holding would screw it on again)."""
+    missing = [n for n in CAP_REQUIRED if n not in data]
+    if missing:
+        raise KeyError(f"teach these first with `python app.py joints <name>`: {', '.join(missing)}")
+    steps = [("release", []), ("move", ["cap_above"]), ("move", ["cap_grip"])]
+    for i in range(twists):
+        steps += [("grab", []), ("turned", ["cap_grip", deg])]
+        if i < twists - 1:
+            steps += [("release", []), ("turned", ["cap_grip", 0.0])]
+    return steps + [("turned", ["cap_above", deg])]
