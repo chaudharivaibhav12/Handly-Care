@@ -299,11 +299,13 @@ class RealRobot:
         async def through(names, o=opts):
             # Fri 5:38: 'context canceled' (connection drop) stopped a close halfway. Same target = safe to resend.
             target = data[names[-1]]["joints"]
+            left = list(names)            # waypoints still to go: a resend never goes back to ones already passed
 
             async def once():
+                nonlocal left
                 try:
                     await self.arm.move_through_joint_positions(
-                        [JointPositions(values=data[n]["joints"]) for n in names], options=o)
+                        [JointPositions(values=data[n]["joints"]) for n in left], options=o)
                 except Exception as e:  # noqa: BLE001
                     if arm_halted(e) or "anceled" not in str(e):
                         raise
@@ -313,9 +315,17 @@ class RealRobot:
                     now = list((await self.arm.get_joint_positions()).values)
                     gap = max(abs(a - b) for a, b in zip(now, target))
                     if gap > config.CANCEL_ACCEPT_DEG:
+                        # Sat 1:00 PM: cancels hit free moves too (retreat -> high, pill_above), not only the pull.
+                        # Resend from where the arm is: drop the waypoints it has already reached or passed, so a
+                        # multi-point move (the pull, gripping the knob) never goes backwards.
+                        d = [max(abs(a - b) for a, b in zip(now, data[n]["joints"])) for n in left]
+                        k = min(range(len(left)), key=d.__getitem__)
+                        if d[k] < config.CANCEL_ACCEPT_DEG and k < len(left) - 1:
+                            k += 1                                   # already at that waypoint: head for the next
+                        left = left[k:]
                         raise
                     print(f"  {names[-1]}: move reported canceled {gap:.1f} deg short; close enough, going on")
-            await retry("joint move", once, delay=self.retry_delay)
+            await retry("joint move", once, tries=config.JOINT_MOVE_TRIES, delay=self.retry_delay)
 
         t0 = time.time()
         for kind, args in steps:

@@ -258,3 +258,42 @@ def test_a_cancel_far_from_the_target_still_fails():
     arm.move_through_joint_positions = cancels
     with pytest.raises(RuntimeError, match="canceled"):
         run(r.drawer("open"))
+
+
+def test_a_pull_canceled_midway_resumes_forward_never_back(monkeypatch):
+    """Sat 1 PM: cancels hit any move. A resend must not drag the gripped knob back to pull1 first."""
+    monkeypatch.setattr(config, "DRAWER_EXTRA_OPEN_MM", 0.0)
+    monkeypatch.setattr(config, "CANCEL_ACCEPT_DEG", 0.5)        # test poses are 1 deg apart
+    teach_all()
+    r, arm, log = robot()
+    real, state = arm.move_through_joint_positions, {"n": 0}
+    d = taught.load()
+
+    async def cancel_at_pull2(positions, options=None, **kw):
+        names = [n for p in positions for n, v in d.items() if v["joints"] == list(p.values)]
+        if names[:1] == ["pull1"] and state["n"] == 0:
+            state["n"] += 1
+            arm.at = d["pull2"]["joints"]                          # got as far as pull2, then canceled
+            raise RuntimeError("(<Status.CANCELLED: 1>, 'context canceled', None)")
+        arm.at = list(positions[-1].values)
+        return await real(positions, options, **kw)
+    arm.move_through_joint_positions = cancel_at_pull2
+    run(r.drawer("open"))
+    assert ["open"] in names_of(arm) and ["pull1", "pull2", "open"] not in names_of(arm)   # resent from pull2 on
+
+
+def test_four_cancels_in_a_row_are_ridden_out(monkeypatch):
+    monkeypatch.setattr(config, "DRAWER_EXTRA_OPEN_MM", 0.0)
+    monkeypatch.setattr(config, "CANCEL_ACCEPT_DEG", 0.5)
+    teach_all()
+    r, arm, log = robot()
+    real, state = arm.move_through_joint_positions, {"n": 0}
+
+    async def flaky(positions, options=None, **kw):
+        state["n"] += 1
+        if 2 <= state["n"] <= 5:
+            raise RuntimeError("(<Status.CANCELLED: 1>, 'context canceled', None)")
+        return await real(positions, options, **kw)
+    arm.move_through_joint_positions = flaky
+    run(r.drawer("open"))
+    assert names_of(arm)[-1] == ["retreat", "high"]
