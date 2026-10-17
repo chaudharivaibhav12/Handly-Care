@@ -41,10 +41,10 @@ Reply with ONLY a JSON object: {"action": "<medicine|tissue|thermometer|water|to
 For "none", say briefly that you can't do it and that the nurse will be told. Never promise anything outside the list."""
 
 
-DEMO_ORDER = ["tissue", "medicine", "thermometer"]          # "default" (Vaibhav, Sat)
+DEMO_ORDER = ["tissue", "medicine", "thermometer", "water"]   # "default" (Vaibhav, Sat; water added 3 PM)
 DEMO_RE = re.compile(r"\b(start|run|begin|do|play)\b.*\bdemo\b|\bdemo\b.*\b(start|default|order)\b", re.I)
 DEMO_WORDS = {"tissue": r"tissues?|kleenex", "medicine": r"medicines?|medications?|meds|pills?|drawer",
-              "thermometer": r"thermometer|temperature"}
+              "thermometer": r"thermometer|temperature", "water": r"water|drink|bottle"}
 
 
 def demo_order(text):
@@ -95,7 +95,8 @@ def interpret(text, client=None, use_ai=None):
         return {"action": "stop", "say": "Stopping.", "source": "local"}
     order = demo_order(text)
     if order:
-        names = {"tissue": "a tissue", "medicine": "your medicine", "thermometer": "your temperature"}
+        names = {"tissue": "a tissue", "medicine": "your medicine", "thermometer": "your temperature",
+                 "water": "some water"}
         say = "Starting the demo: " + ", ".join(names[o] for o in order[:-1]) + ", then " + names[order[-1]] + "."
         return {"action": "demo", "order": order, "say": say, "source": "local"}
     if not text:

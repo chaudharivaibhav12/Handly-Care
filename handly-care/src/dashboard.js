@@ -124,7 +124,7 @@ function removeItem(id){ S.queue = S.queue.filter(q=>q.id!==id); }
 
 // Real-arm beats by name. The demo runs them in DEMO_ORDER, or the order said by voice ('start the demo:
 // thermometer, then medicine, then tissue'). Each waits for the arm (scriptWaiting), so they run back to back.
-const DEMO_ORDER = ['tissue', 'medicine', 'thermometer'];
+const DEMO_ORDER = ['tissue', 'medicine', 'thermometer', 'water'];
 const BEATS = {
   tissue:
   // 1. Tissue: routine request, arm on its own
@@ -143,6 +143,11 @@ const BEATS = {
           phases:[['Announcing temperature check',1500],['Moving slowly near forehead',2500],['Reading temperature',2000],['Returning home',1500]],
           doneText:'Temperature 38.4 °C (demo reading), flagged for nurse review',
           done:()=>{ addItem({sev:'review', room:'12', title:'Temperature 38.4 °C', detail:'Non-contact reading by arm · 37.4 °C at 11pm · POD 2 appendectomy', acts:[["I'll assess",'assess','primary'],['Acknowledge','ack','']]}); }}); },
+  water:
+  // 4. Water (Sat 3 PM): a helper holds the bottle; the arm opens it, drops the cap in the small cup, pours a cup
+  ()=>{ log('12','Patient','Voice request: "Could I have some water?"');
+        log('12','System','Routine request. Sent to arm. A helper holds the bottle while the cap comes off.');
+        armTask('12','water',{scripted:true, lastLabel:'Water', doneText:'Opened the bottle and poured a cup of water for '+S.rooms['12'].pt}); },
 };
 const AFTER_ARM = [
   // Risk: respiratory depression in another room, nurse only (after the arm beats, so they run back to back)

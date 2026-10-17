@@ -106,3 +106,4 @@ time,command,object,from,to,grabbed,error_mm,note
 14:36:54,water,bottle,slot2,slot1,0,,stopped while unscrewing the cap: I'm too far from the start pose (83 deg on one joint); move me near 'high' first
 14:37:06,water,bottle,slot2,slot1,0,,stopped while unscrewing the cap: I'm too far from the start pose (83 deg on one joint); move me near 'high' first
 14:39:03,water,bottle,slot2,slot1,0,,stopped while pouring: I'm too far from the start pose (111 deg on one joint); move me near 'high' first
+14:51:22,water,bottle,slot2,slot1,1,,y

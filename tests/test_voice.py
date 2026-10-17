@@ -95,10 +95,11 @@ def test_bridge_say_never_starts_the_arm():
 
 
 @pytest.mark.parametrize("text,order", [
-    ("start the demo", ["tissue", "medicine", "thermometer"]),
-    ("start the demo, default order", ["tissue", "medicine", "thermometer"]),
-    ("run the demo: thermometer, then medicine, then tissue", ["thermometer", "medicine", "tissue"]),
-    ("start the demo with my medicine first", ["medicine", "tissue", "thermometer"]),
+    ("start the demo", ["tissue", "medicine", "thermometer", "water"]),
+    ("start the demo, default order", ["tissue", "medicine", "thermometer", "water"]),
+    ("run the demo: thermometer, then medicine, then tissue", ["thermometer", "medicine", "tissue", "water"]),
+    ("start the demo with water first", ["water", "tissue", "medicine", "thermometer"]),
+    ("start the demo with my medicine first", ["medicine", "tissue", "thermometer", "water"]),
 ])
 def test_start_the_demo_in_the_order_said(text, order):
     """Sat 12 PM: 'start the demo' runs the default order; naming tasks picks the order (the rest follow)."""
