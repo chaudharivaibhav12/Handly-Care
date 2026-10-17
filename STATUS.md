@@ -5,6 +5,7 @@ Update after every milestone, measurement, or decision. History lives in `resear
 EXP/DEC records; this page is only the current state.
 
 ## Handoff (for a new session, Fri 7:58 PM laptop clock)
+- SAT: no 1:30 PM freeze (Vaibhav, 12:30): changes allowed until the 3:30 demos. Demo by dashboard 'Start demo' or voice 'start the demo'.
 - FOLDER (7:56): work in `Github\Handly-Care` now (git repo, own .venv); `Viam-Hack\sidekick` is a stale copy.
 - DEMO (DEC-005): open the middle drawer, take the medicine capsule box out, hand it to the patient; laser thermometer later. Teammate handoff files are coming.
 - DASHBOARD (8:30 PM): medicine + tissue + to_high ran OK from it on the real arm (Vaibhav). VOICE (sim + real Claude only, no real mic/arm yet): Speak button (key M) or type → Claude picks medicine/tissue/start pose/none, says the reply aloud, then the confirm click; "stop" stops at once. `python bridge.py` → open http://localhost:8765 → Arm Setup → Connect. "Release pill box" runs `medicine`, the tissue request / Hand Over runs `tissue`, "Arm to start pose" runs `to_high`; a confirm box shows the checklist before every run. One run at a time. Thermometer stays simulated. Use "Next event" with autoplay PAUSED (autoplay fires beats every 9 s while a 60 s routine runs). `python bridge.py --sim` = no arm.

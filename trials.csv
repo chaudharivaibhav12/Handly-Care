@@ -91,3 +91,4 @@ time,command,object,from,to,grabbed,error_mm,note
 11:59:27,thermometer,thermometer,therm_spot,ball,1,,"ran, mode press (outcome not checked)"
 12:00:04,medicine,pill_box,drawer,handoff,0,,move error: I'm too far from the start pose (60 deg on one joint); move me near 'high' first
 12:00:06,thermometer,thermometer,therm_spot,ball,0,,move error: I'm too far from the start pose (60 deg on one joint); move me near 'high' first
+12:21:30,tissue,tissue_box,"339,270",handoff,1,,ran (outcome not checked)

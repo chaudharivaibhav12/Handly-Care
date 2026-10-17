@@ -298,8 +298,24 @@ class RealRobot:
 
         async def through(names, o=opts):
             # Fri 5:38: 'context canceled' (connection drop) stopped a close halfway. Same target = safe to resend.
-            await retry("joint move", lambda: self.arm.move_through_joint_positions(
-                [JointPositions(values=data[n]["joints"]) for n in names], options=o), delay=self.retry_delay)
+            target = data[names[-1]]["joints"]
+
+            async def once():
+                try:
+                    await self.arm.move_through_joint_positions(
+                        [JointPositions(values=data[n]["joints"]) for n in names], options=o)
+                except Exception as e:  # noqa: BLE001
+                    if arm_halted(e) or "anceled" not in str(e):
+                        raise
+                    # Fri 10:3x PM + Sat 12:21: the drawer pull came back 'canceled' 1.7 deg short of open_far, 3 times
+                    # in a row (the drawer's end stop, most likely), killing the run while gripping the knob.
+                    # Essentially there = carry on; resending only pushes into the stop again.
+                    now = list((await self.arm.get_joint_positions()).values)
+                    gap = max(abs(a - b) for a, b in zip(now, target))
+                    if gap > config.CANCEL_ACCEPT_DEG:
+                        raise
+                    print(f"  {names[-1]}: move reported canceled {gap:.1f} deg short; close enough, going on")
+            await retry("joint move", once, delay=self.retry_delay)
 
         t0 = time.time()
         for kind, args in steps:

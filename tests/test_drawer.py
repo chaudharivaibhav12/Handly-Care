@@ -125,6 +125,7 @@ def test_refuses_a_big_blind_first_jump_to_high():
 def test_a_dropped_connection_mid_drawer_is_retried(monkeypatch):
     """EXP-007 close 2 (Fri 5:38): 'context canceled' after the first move left the arm waiting by the drawer."""
     monkeypatch.setattr(config, "DRAWER_EXTRA_OPEN_MM", 0.0)
+    monkeypatch.setattr(config, "CANCEL_ACCEPT_DEG", 0.5)   # test poses are only 1 deg apart: the cancel is "far" here
     teach_all()
     r, arm, log = robot()
     real, state = arm.move_through_joint_positions, {"n": 0}
@@ -225,3 +226,35 @@ def test_pills_lifts_straight_out_of_the_drawer_when_taught(monkeypatch):
     r, arm, log = robot()
     run(r.pills())
     assert names_of(arm)[2] == ["pill_lift", "pill_above"]
+
+
+def test_a_pull_canceled_just_short_of_the_end_counts_as_done(monkeypatch):
+    """Fri night + Sat 12:21: the pull came back 'context canceled' 1.7 deg short of open_far three times in a row
+    (the drawer's end stop), and the run died gripping the knob. Within CANCEL_ACCEPT_DEG: let go and carry on."""
+    monkeypatch.setattr(config, "DRAWER_EXTRA_OPEN_MM", 0.0)
+    teach_all()
+    r, arm, log = robot()
+    real = arm.move_through_joint_positions
+
+    async def stalls(positions, options=None, **kw):
+        target = list(positions[-1].values)
+        if target == taught.load()["open"]["joints"]:
+            arm.at = [v - 1.7 for v in target]                        # stopped 1.7 deg short of the end
+            raise RuntimeError("(<Status.CANCELLED: 1>, 'context canceled', None)")
+        arm.at = target
+        return await real(positions, options, **kw)
+    arm.move_through_joint_positions = stalls
+    run(r.drawer("open"))
+    assert names_of(arm)[-1] == ["retreat", "high"]                   # finished the routine
+    assert log == ["release", "grab", "release"]                      # let go of the knob
+
+
+def test_a_cancel_far_from_the_target_still_fails():
+    teach_all()
+    r, arm, log = robot()
+
+    async def cancels(positions, options=None, **kw):
+        raise RuntimeError("(<Status.CANCELLED: 1>, 'context canceled', None)")
+    arm.move_through_joint_positions = cancels
+    with pytest.raises(RuntimeError, match="canceled"):
+        run(r.drawer("open"))

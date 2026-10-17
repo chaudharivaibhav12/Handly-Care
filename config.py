@@ -187,6 +187,7 @@ DRAWER_JOINTS_PATH = "drawer_joints.json"   # joint poses taught by hand (taught
 # Joint-space replay speed caps (MoveOptions, obeyed by the arm itself). Vaibhav, 4:55 PM: half speed for the drawer.
 DRAWER_MAX_VEL_DEGS = 15.0
 DRAWER_MAX_ACC_DEGS = 30.0
+CANCEL_ACCEPT_DEG = 3.0       # a taught joint move that comes back 'canceled' this close to its target counts as done (Sat: drawer end stop)
 # Tissue (Fri 7:02 PM): pinch the tissue sticking out of a pop-up box and pull ONE out, then hand it over.
 TISSUE_GRIP_BELOW_TOP_MM = 15.0   # fingertips this far below the measured top (the tissue puff), above the cardboard
 TISSUE_PULL_MM = 250.0            # straight up this far: a pop-up tissue slides out whole
