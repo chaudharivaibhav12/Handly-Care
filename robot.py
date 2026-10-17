@@ -434,7 +434,26 @@ class RealRobot:
             raise MoveError("no safe path to your hand; I'm holding the tissue up high", holding=True) from e
         await asyncio.sleep(hold_s)
         await self.gripper.open()
-        await self.to_high()          # end at 'high' so `medicine` can follow directly (7:15 PM)
+        await self.back_from_handoff(data)   # end at 'high' so `medicine` can follow directly (7:15 PM)
+
+    async def back_from_handoff(self, data):
+        """From the hand-over spot to 'high'. If the planner left the arm in the taught 'handoff' joint configuration,
+        take the medicine's own way back (one joint move through pill_above, proven every medicine run); else the
+        careful joint-by-joint to_high. Sat 11:45: to_high after the tissue took ~30+ s for a short distance."""
+        from viam.proto.component.arm import JointPositions, MoveOptions
+        now = list((await self.arm.get_joint_positions()).values)
+        gap = max(abs(a - b) for a, b in zip(now, data["handoff"]["joints"]))
+        if gap > config.HANDOFF_JOINT_MATCH_DEG or "pill_above" not in data or "high" not in data:
+            print(f"  not in the taught handoff configuration ({gap:.0f} deg off): careful way back")
+            await self.to_high()
+            return
+        opts = MoveOptions(max_vel_degs_per_sec=config.DRAWER_MAX_VEL_DEGS,
+                           max_acc_degs_per_sec2=config.DRAWER_MAX_ACC_DEGS)
+        t0 = time.time()
+        await retry("joint move", lambda: self.arm.move_through_joint_positions(
+            [JointPositions(values=data[n]["joints"]) for n in ("pill_above", "high")], options=opts),
+            delay=self.retry_delay)
+        print(f"  pill_above -> high: {time.time() - t0:.1f} s")
 
     async def pills(self, hold_s=3.0):
         """Drawer open, arm at 'high': take the medicine out of the drawer and hand it to the patient."""

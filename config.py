@@ -190,7 +190,8 @@ DRAWER_MAX_ACC_DEGS = 30.0
 # Tissue (Fri 7:02 PM): pinch the tissue sticking out of a pop-up box and pull ONE out, then hand it over.
 TISSUE_GRIP_BELOW_TOP_MM = 15.0   # fingertips this far below the measured top (the tissue puff), above the cardboard
 TISSUE_PULL_MM = 250.0            # straight up this far: a pop-up tissue slides out whole
-HANDOFF_HOLD_S = 3.0           # hold the item at the patient's hand this long before letting go
+HANDOFF_HOLD_S = 0.5           # hold the item at the patient's hand this long before letting go (Sat: 3.0 -> 0.5, Vaibhav)
+HANDOFF_JOINT_MATCH_DEG = 10.0  # after the tissue: within this of the taught 'handoff' joints -> the medicine's quick way back
 # Thermometer (Sat): IR thermometer on a taped spot, ball on a taped spot; the light on the ball shows it works.
 # Its button is one click; held down, the light goes off after ~2 s.
 THERM_MODE = "press"            # "press": hold gently, click at the ball (needs the 2 positions below); "fast": the grip clicks, swing fast

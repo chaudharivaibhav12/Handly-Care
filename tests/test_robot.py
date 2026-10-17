@@ -444,7 +444,7 @@ def test_tissue_pinches_the_puff_pulls_straight_up_and_hands_over(monkeypatch):
     monkeypatch.setattr(asyncio, "sleep", no_sleep)
     taught.save("handoff", [0.0] * 6, {"x": -245.0, "y": 359.0, "z": 241.0, "o_x": 0.4, "o_y": 0.0, "o_z": -0.9, "theta": 170.0})
     robot, motion, gripper, log = make()
-    robot.to_high = lambda: asyncio.sleep(0)
+    robot.back_from_handoff = lambda data: asyncio.sleep(0)
     run(robot.tissue((341.0, 283.0), 173.0, others={"drawer_box": (297.0, 482.0), "gone": None}))
     g = config.TABLE_Z + 173.0 - config.TISSUE_GRIP_BELOW_TOP_MM
     xyz = [c["xyz"] for c in motion.calls]
@@ -534,3 +534,44 @@ def test_to_high_leans_back_first_when_starting_low():
     first = robot.arm.moves[0]
     assert first[1] == pytest.approx(-16.7 - config.TO_HIGH_LIFT_DEG) and first[2] == pytest.approx(-32.6 - config.TO_HIGH_LIFT_DEG)
     assert first[0] == 122.7                                   # nothing else moves in the lift
+
+
+def _taught_for_return():
+    import taught
+    for n, j in (("high", [90.0, 1, -51, -34, 53, 102]), ("pill_above", [66.0, -8, -36, 48, 25, 102]),
+                 ("handoff", [123.0, -17, -33, 45, 25, 102])):
+        taught.save(n, j, {"x": 0, "y": 0, "z": 300})
+    return taught.load()
+
+
+def test_after_the_tissue_the_arm_goes_back_the_medicines_quick_way():
+    """Sat 11:45: to_high (joint by joint, 10 deg/s) after the tissue took ~30+ s; the medicine's own return
+    from the same taught 'handoff' (one joint move through pill_above) is proven and much quicker."""
+    data = _taught_for_return()
+    robot, _, _, _ = make()
+    robot.arm = JointArm([125.0, -15, -33, 45, 25, 102])            # planner landed within 2 deg of 'handoff'
+    seen = []
+
+    async def through(positions, options=None, **kw):
+        seen.append(([list(p.values) for p in positions], options))
+    robot.arm.move_through_joint_positions = through
+    called = []
+    robot.to_high = lambda *a, **k: called.append(1)
+    run(robot.back_from_handoff(data))
+    assert called == []
+    assert seen[0][0] == [data["pill_above"]["joints"], data["high"]["joints"]]
+    assert seen[0][1].max_vel_degs_per_sec == config.DRAWER_MAX_VEL_DEGS
+
+
+def test_after_the_tissue_an_unexpected_arm_configuration_goes_the_careful_way():
+    import asyncio
+    data = _taught_for_return()
+    robot, _, _, _ = make()
+    robot.arm = JointArm([123.0, -17, -33, 45 + 180, 25, 102])      # same spot, wrist flipped: not the taught way
+    called = []
+
+    async def careful(*a, **k):
+        called.append(1)
+    robot.to_high = careful
+    run(robot.back_from_handoff(data))
+    assert called == [1] and robot.arm.moves == []
