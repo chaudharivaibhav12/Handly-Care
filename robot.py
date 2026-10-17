@@ -280,6 +280,14 @@ class RealRobot:
         await self.move_to(dx, dy, z, straight=True)         # straight up, clear of it
         return True
 
+    async def gripper_empty(self):
+        """Fingers (nearly) fully open = holding nothing. xArm gripper: 0 closed .. 850 open (do_command get)."""
+        try:
+            pos = (await self.gripper.do_command({"get": True})).get("pos")
+            return pos is not None and float(pos) >= config.GRIPPER_OPEN_MIN
+        except Exception:  # noqa: BLE001 -- can't tell: assume it may be holding something
+            return False
+
     async def replay(self, data, steps, start="high"):
         """Run taught.py steps: joint moves through named poses at the drawer speed cap, gripper open/grab, waits.
         No motion planner (blind): poses must be taught with clear space. Starts only near the `start` pose."""
@@ -289,6 +297,15 @@ class RealRobot:
         # The first move (from wherever the arm is to the first pose) is not taught, and joint moves are blind.
         now = (await self.arm.get_joint_positions()).values
         jump = max(abs(a - b) for a, b in zip(now, data[start]["joints"]))
+        if jump > config.DRAWER_MAX_FIRST_JUMP_DEG and start == "high" and config.AUTO_TO_HIGH \
+                and await self.gripper_empty():
+            # Sat 3 PM: left away from 'high' (hand teaching, a stopped run, bird's-eye) -> the demo refused.
+            # With nothing in the fingers, get there the careful way first (to_high: lean back, one joint at a
+            # time, height checked), then replay as usual.
+            print(f"  not at the start pose ({jump:.0f} deg away): going there carefully first")
+            await self.to_high()
+            now = (await self.arm.get_joint_positions()).values
+            jump = max(abs(a - b) for a, b in zip(now, data[start]["joints"]))
         if jump > config.DRAWER_MAX_FIRST_JUMP_DEG:
             raise MoveError(f"I'm too far from the start pose ({jump:.0f} deg on one joint); "
                             f"move me near 'high' first", holding=False)

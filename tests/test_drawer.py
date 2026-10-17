@@ -297,3 +297,41 @@ def test_four_cancels_in_a_row_are_ridden_out(monkeypatch):
     arm.move_through_joint_positions = flaky
     run(r.drawer("open"))
     assert names_of(arm)[-1] == ["retreat", "high"]
+
+
+class OpenGripper(FakeGripper):
+    def __init__(self, log, pos=839.0):
+        super().__init__(log)
+        self.pos = pos
+
+    async def do_command(self, cmd, **kw):
+        return {"pos": self.pos}
+
+
+def test_started_away_from_high_with_empty_fingers_goes_there_carefully_first(monkeypatch):
+    """Sat 3 PM: the demo refused 'too far from the start pose (68 deg)' after hand teaching left the arm elsewhere."""
+    monkeypatch.setattr(config, "DRAWER_EXTRA_OPEN_MM", 0.0)
+    teach_all()
+    r, arm, log = robot()
+    r.gripper = OpenGripper(log)
+    arm.at = [90.0] * 6
+    went = []
+
+    async def to_high(*a, **k):
+        went.append(1)
+        arm.at = taught.load()["high"]["joints"]
+    r.to_high = to_high
+    run(r.drawer("open"))
+    assert went == [1] and names_of(arm)[-1] == ["retreat", "high"]
+
+
+def test_away_from_high_while_holding_something_still_refuses():
+    teach_all()
+    r, arm, log = robot()
+    r.gripper = OpenGripper(log, pos=14.0)                       # closed: maybe on the knob or the bottle
+    arm.at = [90.0] * 6
+    r.to_high = lambda *a, **k: (_ for _ in ()).throw(AssertionError("must not move"))
+    from robot import MoveError
+    with pytest.raises(MoveError, match="near 'high'"):
+        run(r.drawer("open"))
+    assert arm.moves == []
