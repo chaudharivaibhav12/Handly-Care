@@ -594,3 +594,18 @@ def test_drop_cap_at_a_taught_height():
     robot, motion, gripper, log = make()
     run(robot.drop_cap((350.0, -20.0), 95.0, drop_z=200.0))
     assert [c["xyz"] for c in motion.calls][1] == (350.0, -20.0, 200.0)
+
+
+def test_drop_cap_ends_in_the_taught_joints():
+    """Sat 2:38 PM: the planner left the wrist 111 deg off the taught cap_drop joints -> the next replay refused.
+    With the taught joints, the last step down is a joint move to exactly those, and it stays there."""
+    robot, motion, gripper, log = make()
+    moves = []
+
+    async def through(positions, options=None, **kw):
+        moves.append([list(p.values) for p in positions])
+    robot.arm.move_through_joint_positions = through
+    run(robot.drop_cap((353.0, 42.0), 95.0, drop_z=154.0, theta=164.0, joints=[7.3, -12, -30.7, -2.3, 43.5, 101.7]))
+    assert len(motion.calls) == 1                                    # only the carry over the cup is planned
+    assert moves == [[[7.3, -12, -30.7, -2.3, 43.5, 101.7]]]
+    assert log[-1] == "open"                                          # lets go there, no move after

@@ -515,7 +515,7 @@ class RealRobot:
         data = taught.load()
         await self.replay(data, taught.cap_sequence(data, config.CAP_TWISTS, config.CAP_TWIST_DEG))
 
-    async def drop_cap(self, xy, rim_h, drop_z=None, theta=None):
+    async def drop_cap(self, xy, rim_h, drop_z=None, theta=None, joints=None):
         """Holding the cap above the bottle: carry it at the current height to above the cup at xy (calibrated
         slot), straight down to CAP_DROP_ABOVE_RIM_MM over the rim (rim_h mm above the table), let go, back up.
         Same-height carry first so it never sweeps low past the bottle (Sat 2 PM)."""
@@ -525,6 +525,18 @@ class RealRobot:
             drop_z = config.TABLE_Z + rim_h + config.CAP_DROP_ABOVE_RIM_MM
         travel = max(here.z, drop_z + config.CAP_DROP_CLEAR_MM)
         await self.move_to(x, y, travel, theta=theta)                      # over the cup, pointing down
+        if joints is not None:
+            # Sat 2:38 PM: the planner reached the taught spot with the wrist 111 deg off the taught joints, so the
+            # next taught replay (cap_drop -> bottle_via) was refused. Last step down = a joint move to the exact
+            # taught cap_drop joints (straight down over the cup + a wrist turn); let go there and stay.
+            from viam.proto.component.arm import JointPositions, MoveOptions
+            opts = MoveOptions(max_vel_degs_per_sec=config.DRAWER_MAX_VEL_DEGS,
+                               max_acc_degs_per_sec2=config.DRAWER_MAX_ACC_DEGS)
+            await retry("joint move", lambda: self.arm.move_through_joint_positions(
+                [JointPositions(values=list(joints))], options=opts), delay=self.retry_delay)
+            await self.gripper.open()
+            print("  cap dropped")
+            return
         await self.move_to(x, y, drop_z, straight=True, theta=theta)       # down to just above the rim
         await self.gripper.open()
         print("  cap dropped")
@@ -652,7 +664,7 @@ class SimRobot:
     async def cap(self):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["cap"]
 
-    async def drop_cap(self, xy, rim_h, drop_z=None, theta=None):
+    async def drop_cap(self, xy, rim_h, drop_z=None, theta=None, joints=None):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["drop_cap"]
 
     async def pour(self, start="high"):

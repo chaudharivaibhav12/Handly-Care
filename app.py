@@ -305,7 +305,8 @@ async def run_command(robot, cmd):
                 spot = taught.load().get("cap_drop")
                 if spot:      # Sat 2:30: the calibrated slot 3 missed the cup; a hand-shown spot over its centre wins
                     p = spot["pose"]
-                    await robot.drop_cap((p["x"], p["y"]), config.CAP_CUP_HEIGHT_MM, drop_z=p["z"], theta=p["theta"])
+                    await robot.drop_cap((p["x"], p["y"]), config.CAP_CUP_HEIGHT_MM, drop_z=p["z"], theta=p["theta"],
+                                         joints=spot["joints"])
                 else:
                     await robot.drop_cap(config.ALL_SPOTS[config.CAP_CUP_SPOT], config.CAP_CUP_HEIGHT_MM)
                 # Sat 2:35 PM: water goes from the cup straight up to bottle_via and on to the bottle (taught path,
