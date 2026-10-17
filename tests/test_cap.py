@@ -135,3 +135,13 @@ def test_water_goes_from_the_cup_straight_to_the_bottle_when_taught():
     robot = sim()
     assert run(app.run_command(robot, ["water"])) is True
     assert robot.drawer_moves == ["cap", "drop_cap", "pour"]
+
+
+def test_pour_puts_the_bottle_down_from_straight_above_its_spot(monkeypatch):
+    """Sat 2:45 PM: lift -> grip swung the bottle's bottom into the table first. With bottle_above taught, it goes
+    up off the spot, over, and straight back down onto it (both ways)."""
+    _teach_pour()
+    taught.save("bottle_above", [40.0] * 6, {"x": 308.0, "y": 102.0, "z": 180.0})
+    seq = taught.pour_sequence(taught.load(), 3.0, 550)
+    moves = [args for kind, args in seq if kind == "move"]
+    assert ["bottle_above", "bottle_lift"] in moves and ["bottle_above", "bottle_grip"] in moves

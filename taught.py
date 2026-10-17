@@ -182,7 +182,11 @@ def pour_sequence(data, hold_s=3.0, hold_pos=550):
     missing = [n for n in POUR_REQUIRED if n not in data]
     if missing:
         raise KeyError(f"teach these first with `python app.py joints <name>`: {', '.join(missing)}")
+    # bottle_above (optional, Sat 2:45 PM): the bottle held straight above its spot on slot 2. Going down from
+    # bottle_lift straight to bottle_grip swung the bottle's bottom into the table first and tipped it; with
+    # bottle_above it goes up off the spot, over, and straight back down onto it.
+    up = ["bottle_above"] if "bottle_above" in data else []
     return [("move", ["bottle_grip"]), ("set", [hold_pos]),
-            ("move", ["bottle_lift"]),
+            ("move", up + ["bottle_lift"]),
             ("slow", ["pour"]), ("wait", [hold_s]), ("slow", ["bottle_lift"]),     # pour, then straighten it
-            ("move", ["bottle_grip"]), ("release", []), ("move", ["bottle_approach"])]
+            ("move", up + ["bottle_grip"]), ("release", []), ("move", ["bottle_approach"])]
