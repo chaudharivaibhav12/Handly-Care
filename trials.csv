@@ -85,3 +85,9 @@ time,command,object,from,to,grabbed,error_mm,note
 11:27:26,thermometer,thermometer,therm_spot,ball,1,,"ran, mode press (outcome not checked)"
 11:31:30,tissue,tissue_box,"337,272",handoff,1,,ran (outcome not checked)
 11:42:45,tissue,tissue_box,"337,272",handoff,1,,ran (outcome not checked)
+11:57:57,tissue,tissue_box,"339,271",handoff,1,,ran (outcome not checked)
+11:58:53,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+11:59:13,thermometer,thermometer,therm_spot,ball,1,,"ran, mode press (outcome not checked)"
+11:59:27,thermometer,thermometer,therm_spot,ball,1,,"ran, mode press (outcome not checked)"
+12:00:04,medicine,pill_box,drawer,handoff,0,,move error: I'm too far from the start pose (60 deg on one joint); move me near 'high' first
+12:00:06,thermometer,thermometer,therm_spot,ball,0,,move error: I'm too far from the start pose (60 deg on one joint); move me near 'high' first

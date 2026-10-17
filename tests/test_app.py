@@ -229,3 +229,15 @@ def test_trial_note_survives_no_keyboard(monkeypatch):
         raise EOFError
     monkeypatch.setattr("builtins.input", eof)
     assert app.ask_note("?") == ""
+
+
+def test_a_tissue_run_that_sees_no_box_goes_back_to_high(monkeypatch):
+    """Sat 12 PM: a failed tissue left the arm at bird's-eye, so the demo's medicine was refused (60 deg from 'high')."""
+    robot = sim()                                   # the sim table has no tissue box
+    monkeypatch.setattr(app.perception, "find", lambda r: _scene(r))
+    assert run(app.run_command(robot, ["tissue"])) is False
+    assert robot.drawer_moves[-1] == "to_high"
+
+
+async def _scene(robot):
+    return robot.seen()

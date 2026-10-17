@@ -169,3 +169,14 @@ def test_output_is_clean_and_app_never_asks():
     r.start("run")
     s = wait_result(r)
     assert s["lines"] == ["INFO dial", "note=''"]
+
+
+def test_every_run_is_saved_with_its_full_output(tmp_path):
+    """Sat 12 PM: a failed tissue's reason was lost (only the last run's 12 lines were kept)."""
+    r = bridge.Runner(routines=FAKE, command=fake_command, log_dir=str(tmp_path))
+    r.start("fail")
+    wait_result(r)
+    files = list(tmp_path.iterdir())
+    assert len(files) == 1 and files[0].name.endswith("-fail-FAIL.txt")
+    text = files[0].read_text(encoding="utf-8")
+    assert "stopped: no safe path to the tissues" in text and "[bridge] exit 1" in text

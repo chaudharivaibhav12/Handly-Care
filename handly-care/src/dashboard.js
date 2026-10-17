@@ -107,6 +107,9 @@ function liveTask(n, item, opts){
     finishTask(n, item, {...opts, isLive:true}, Math.round((Date.now()-t0)/1000));
   }).catch(err => {
     r.arm='stopped'; r.live=false; r.phase=''; r.progress=0;
+    // A failed task stops the scripted demo: the next one must not start from wherever this one left the arm.
+    if (opts.scripted && S.running) { S.running = false; renderControls(); cue('Sorry, something went wrong. Stopping the demo.');
+      log(n,'System','Demo paused: ' + item + ' failed. Fix it, then Resume or Reset.'); }
     log(n,'System','Real arm stopped: ' + (err && err.message ? err.message : err));
     renderAll();
   });

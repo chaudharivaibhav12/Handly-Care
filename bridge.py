@@ -51,8 +51,10 @@ ROUTINES = {
 class Runner:
     """At most one app.py routine at a time; thread-safe status for the page."""
 
-    def __init__(self, sim=False, routines=None, command=None):
+    def __init__(self, sim=False, routines=None, command=None, log_dir=None):
         self.sim = sim
+        self.log_dir = log_dir      # every run's full output saved here (Sat 12 PM: a failed tissue's reason was lost)
+        self.full = []
         self.routines = routines or ROUTINES
         self.command = command or self._app_command
         self.lock = threading.Lock()
@@ -87,7 +89,7 @@ class Runner:
                                          encoding="utf-8", errors="replace", creationflags=flags, env=env)
             self.run_id += 1
             self.task, self.step, self.started = name, phases[0][1], time.time()
-            self.lines, self.result, self.stopping = [], None, False
+            self.lines, self.full, self.result, self.stopping = [], [], None, False
             threading.Thread(target=self._read, args=(self.proc, self.run_id, phases), daemon=True).start()
             return self.run_id
 
@@ -98,6 +100,7 @@ class Runner:
                 continue
             with self.lock:
                 self.lines = (self.lines + [line])[-40:]
+                self.full.append(line)
                 self.step = next_step(self.step, line, phases)
         code = proc.wait()
         with self.lock:
@@ -110,6 +113,14 @@ class Runner:
             else:
                 msg = last_reason(self.lines) or f"app.py exited with code {code}"
             self.result = {"id": run_id, "task": self.task, "ok": ok, "message": msg, "seconds": secs}
+            if self.log_dir:
+                try:
+                    os.makedirs(self.log_dir, exist_ok=True)
+                    name = time.strftime("%H%M%S", time.localtime(self.started)) + f"-{self.task}-{'ok' if ok else 'FAIL'}.txt"
+                    with open(os.path.join(self.log_dir, name), "w", encoding="utf-8") as f:
+                        f.write("\n".join(self.full + [f"[bridge] exit {code}: {msg} ({secs} s)"]) + "\n")
+                except OSError:
+                    pass
 
     def stop(self, grace=6.0):
         """Ask the run to stop the arm (Ctrl+Break -> app.py calls robot.stop()); kill it if it doesn't exit."""
@@ -248,7 +259,7 @@ def main(argv=None):
         load_dotenv(os.path.join(ROOT, ".env"))
     except ImportError:
         pass
-    runner = Runner(sim=args.sim)
+    runner = Runner(sim=args.sim, log_dir=None if args.sim else os.path.join(ROOT, "results", "bridge-runs"))
     server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(runner))   # this laptop only
     print(f"Handly Care bridge{' (SIMULATED arm)' if args.sim else ''}: open http://localhost:{args.port}  (Ctrl+C to quit)")
     try:

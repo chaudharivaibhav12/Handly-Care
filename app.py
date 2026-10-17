@@ -250,6 +250,7 @@ async def run_command(robot, cmd):
         names = [o for o, p in scene.items() if p is not None and (o == want or (want is None and "tissue" in o))]
         if not names:
             print(f"I can't see a tissue box. I see: {[o for o, p in scene.items() if p is not None]}")
+            await back_to_high(robot)
             return False
         box = names[0]
         w, d, h = config.OBJECTS[box]["size"]
@@ -263,6 +264,8 @@ async def run_command(robot, cmd):
         except MoveError as e:
             print(f"stopped: {e}" + (" -- STILL HOLDING IT" if e.holding else ""))
             trials.log("tissue", box, f"{scene[box][0]:.0f},{scene[box][1]:.0f}", "handoff", False, None, note=f"move error: {e}")
+            if not e.holding:
+                await back_to_high(robot)
             return False
         print("tissue: done")
         note = ask_note("one tissue handed over? (y/n/comment, Enter to skip): ")
@@ -311,6 +314,16 @@ async def run_command(robot, cmd):
         print(__doc__)
         return False
     return True
+
+
+async def back_to_high(robot):
+    """After a failed tissue (nothing held): back to 'high' so the next routine can start (Sat 12 PM: the demo's
+    medicine was refused because the arm was left at bird's-eye)."""
+    try:
+        await robot.to_high()
+        print("back at 'high'")
+    except Exception as e:  # noqa: BLE001
+        print(f"couldn't get back to 'high': {e}")
 
 
 def ask_note(prompt):

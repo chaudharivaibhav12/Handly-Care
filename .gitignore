@@ -11,3 +11,4 @@ trials-sim.csv
 node_modules/
 dist/
 *.pyc
+results/bridge-runs/
