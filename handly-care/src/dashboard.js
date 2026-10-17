@@ -81,13 +81,29 @@ function armTask(n, item, opts){
   after(total, ()=>{ if(r.token!==token) return; finishTask(n, item, opts, Math.round((S.sim-requested)/1000*RESP_RATIO)); });
   renderAll();
 }
+// Short spoken cues at each real-arm phase (Vaibhav, Sat 12 PM). Keys are bridge.py's phase labels.
+const CUES = {
+  'Opening the drawer': 'Opening the drawer.',
+  'Taking out the pill box': 'Getting your medicine.',
+  'Handing it to the patient': "Here's your medicine.",
+  'Closing the drawer': 'Closing the drawer.',
+  'Looking for the tissue box': 'Getting you a tissue.',
+  'Handing it over': "Here's your tissue.",
+  'Picking up the thermometer': 'Let me check your temperature.',
+  'Measuring': 'Measuring.',
+};
+const DONE_CUES = { temp: 'Done. Your nurse will see the reading.' };
+function cue(text){ try { speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } catch {} }
+
 function liveTask(n, item, opts){
   const r = S.rooms[n]; const t0 = Date.now();
   r.arm='working'; r.live=true; r.token=null; r.phase='Starting'; r.progress=0;
   log(n,'System', opts.kind==='temp' ? 'Real arm started temperature check.' : 'Real arm started hand-over of '+item+'.');
   renderAll();
-  const onStep = (label, p) => { r.phase = label; r.progress = p; renderArms(); };
+  let said = '';
+  const onStep = (label, p) => { if (label !== said && CUES[label]) cue(CUES[label]); said = label; r.phase = label; r.progress = p; renderArms(); };
   (opts.kind==='temp' ? live.measure({ readSeconds: 3, onStep }) : live.handover({ item, onStep })).then(() => {
+    if (DONE_CUES[opts.kind]) cue(DONE_CUES[opts.kind]);
     finishTask(n, item, {...opts, isLive:true}, Math.round((Date.now()-t0)/1000));
   }).catch(err => {
     r.arm='stopped'; r.live=false; r.phase=''; r.progress=0;
@@ -99,23 +115,29 @@ function liveTask(n, item, opts){
 function addItem(it){ it.id='q'+(S.uid++); it.t=clock(); it.state=''; S.queue.push(it); if(it.sev==='critical') chime(); }
 function removeItem(id){ S.queue = S.queue.filter(q=>q.id!==id); }
 
-const SCRIPT = [
-  // Real-arm order (Vaibhav, Sat): 1 tissue, 2 medicine (drawer), 3 thermometer. Each beat waits for the arm
-  // to finish and for the nurse's approval (scriptWaiting), so the arm never gets a second job mid-run.
+// Real-arm beats by name. The demo runs them in DEMO_ORDER, or the order said by voice ('start the demo:
+// thermometer, then medicine, then tissue'). Each waits for the arm (scriptWaiting), so they run back to back.
+const DEMO_ORDER = ['tissue', 'medicine', 'thermometer'];
+const BEATS = {
+  tissue:
   // 1. Tissue: routine request, arm on its own
   ()=>{ log('12','Patient','Voice request: "Could I have a tissue?"');
         log('12','System','Routine request. Sent to arm.');
         armTask('12','tissue',{requestedAt:S.sim-600, scripted:true}); },
+  medicine:
   // 2. Pill box: nurse-prepared and released ahead of time, so the arm hands it over right after the tissue
   //    (Vaibhav, Sat 11:50: no Release click in the demo; the confirm box before the run stays)
   ()=>{ log('12','System','03:00 medication box is due. Released in advance by R. Alvarez, RN at 7:15pm · Acetaminophen, docusate.');
         armTask('12','pill box',{scripted:true, lastLabel:'Pill box', doneText:'Handed nurse-prepared pill box to '+S.rooms['12'].pt+'. Logged to MAR'}); },
+  thermometer:
   // 3. Temperature: arm measures without contact, nurse reviews
   ()=>{ log('12','System','Scheduled temperature check. Arm announces it before moving.');
         armTask('12','IR thermometer',{kind:'temp', scripted:true, count:false, lastLabel:'Temp check',
           phases:[['Announcing temperature check',1500],['Moving slowly near forehead',2500],['Reading temperature',2000],['Returning home',1500]],
           doneText:'Temperature 38.4 °C (demo reading), flagged for nurse review',
           done:()=>{ addItem({sev:'review', room:'12', title:'Temperature 38.4 °C', detail:'Non-contact reading by arm · 37.4 °C at 11pm · POD 2 appendectomy', acts:[["I'll assess",'assess','primary'],['Acknowledge','ack','']]}); }}); },
+};
+const AFTER_ARM = [
   // Risk: respiratory depression in another room, nurse only (after the arm beats, so they run back to back)
   ()=>{ log('11','Alert','SpO₂ 88% and falling. Arm actions locked for this room.');
         addItem({sev:'critical', room:'11', title:'SpO₂ 88% and falling', detail:'Sleep apnea · opioid at 01:15 · RR 8 · hard to wake · was 95% at 01:40', acts:[['On my way','enroute','danger']]}); renderAll(); },
@@ -125,6 +147,9 @@ const SCRIPT = [
         addItem({sev:'review', room:'10', title:'Needs help to the bathroom', detail:'74 F · POD 1 cholecystectomy · Fall risk · Bed alarm on', acts:[["I'll go",'go','primary'],['Send J. Ortiz, CNA','aide','']]}); renderAll(); },
   ()=>{ log('', 'System','End of demo script.'); renderAll(); }
 ];
+const buildScript = order => [...order.map(k => BEATS[k]), ...AFTER_ARM];
+let ORDER = DEMO_ORDER;
+let SCRIPT = buildScript(ORDER);
 function fireStep(){ if(S.step>=SCRIPT.length) return; SCRIPT[S.step++](); S.nextAt = S.sim + STEP_GAP; renderControls(); }
 // Hold the script while the real room's arm works or a nurse approval is open (else the next beat would
 // start mid-run and fall back to a simulation, or the thermometer would jump ahead of the unreleased pill box).
@@ -351,11 +376,20 @@ document.addEventListener('click', e=>{
 // One checklist for the whole scripted demo (Vaibhav, Sat 12 PM): asked once before the first beat, then tissue,
 // medicine and thermometer run back to back with no confirm box. Reset clears it. Requests outside the
 // script (voice, Arm Setup, Hand Over) still ask every time.
+// Voice 'start the demo': the chosen order, from the first beat, one checklist, then run.
+function startDemo(order){
+  ORDER = order && order.length ? order : DEMO_ORDER;
+  SCRIPT = buildScript(ORDER);
+  S.step = 0; S.demoChecked = false;
+  log(settings.room,'System','Demo order: ' + ORDER.join(' → ') + '.');
+  if (!demoCheck()) { renderAll(); return; }
+  S.running = true; S.nextAt = S.sim; renderAll();
+}
 function demoCheck(){
   if (S.step > 0 || S.demoChecked || !live.connected) return true;
-  const ok = confirm('Real arm demo: tissue, then medicine, then thermometer, back to back.\n\nCheck all of it:\n'
-    + '• ' + live.checklist('tissue') + '\n• ' + live.checklist('medicine') + '\n• ' + live.checklist('thermometer') + '\n\nStart?');
-  if (ok) { S.demoChecked = true; log(settings.room,'Nurse','Demo checklist confirmed: tissue, medicine, thermometer.'); }
+  const ok = confirm('Real arm demo: ' + ORDER.join(', then ') + ', back to back.\n\nCheck all of it:\n'
+    + ORDER.map(t => '• ' + live.checklist(t)).join('\n') + '\n\nStart?');
+  if (ok) { S.demoChecked = true; log(settings.room,'Nurse','Demo checklist confirmed: ' + ORDER.join(', ') + '.'); }
   return ok;
 }
 $('btnRun').addEventListener('click', ()=>{ if (!S.running && !demoCheck()) return; S.running=!S.running; renderControls(); });
@@ -365,12 +399,12 @@ $('btnSound').addEventListener('click', ()=>{
   if(soundOn && !actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ soundOn=false; } }
   $('btnSound').textContent = soundOn?'Sound on':'Sound off'; $('btnSound').setAttribute('aria-pressed', String(soundOn));
 });
-$('btnReset').addEventListener('click', ()=>{ if (live.busy) live.stop(); S = fresh(); renderAll(); });
+$('btnReset').addEventListener('click', ()=>{ if (live.busy) live.stop(); S = fresh(); ORDER = DEMO_ORDER; SCRIPT = buildScript(ORDER); renderAll(); });
 document.addEventListener('keydown', e=>{ if((e.key==='n'||e.key==='N') && !e.target.closest('input,textarea,select')) $('btnNext').click(); });
 
 /* Voice: the patient speaks (or the nurse types) a request; the bridge picks ONE allowed routine;
    the nurse still clicks Start before the arm moves. "Stop" acts at once, even mid-run. */
-const ACTION_LABEL = {medicine:'Medicine', tissue:'Tissue', thermometer:'Temperature check', to_high:'Start pose', none:'No arm task', stop:'STOP', busy:'Busy'};
+const ACTION_LABEL = {demo:'Start demo', medicine:'Medicine', tissue:'Tissue', thermometer:'Temperature check', to_high:'Start pose', none:'No arm task', stop:'STOP', busy:'Busy'};
 function speak(text){ try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } catch {} }
 function voiceOut(html){ $('voiceOut').innerHTML = html; }
 async function handleVoice(text){
@@ -392,6 +426,7 @@ async function handleVoice(text){
   if (r.action === 'tissue') setTimeout(() => armTask(n,'tissue',{lastLabel:'Tissue', doneText:'Handed a tissue to '+pt+' (voice request)'}), 400);
   if (r.action === 'thermometer') setTimeout(() => armTask(n,'IR thermometer',{kind:'temp', count:false, lastLabel:'Temp check', doneText:'Temperature 38.4 °C (demo reading), flagged for nurse review (voice request)'}), 400);
   if (r.action === 'to_high') setTimeout(() => runSetup('to_high'), 400);
+  if (r.action === 'demo') setTimeout(() => startDemo(r.order), 400);
 }
 function initVoice(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;

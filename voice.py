@@ -38,6 +38,26 @@ Reply with ONLY a JSON object: {"action": "<medicine|tissue|thermometer|to_high|
 For "none", say briefly that you can't do it and that the nurse will be told. Never promise anything outside the list."""
 
 
+DEMO_ORDER = ["tissue", "medicine", "thermometer"]          # "default" (Vaibhav, Sat)
+DEMO_RE = re.compile(r"\b(start|run|begin|do|play)\b.*\bdemo\b|\bdemo\b.*\b(start|default|order)\b", re.I)
+DEMO_WORDS = {"tissue": r"tissues?|kleenex", "medicine": r"medicines?|medications?|meds|pills?|drawer",
+              "thermometer": r"thermometer|temperature"}
+
+
+def demo_order(text):
+    """'start the demo' -> the default order; 'start the demo with the thermometer, then medicine, then tissue'
+    -> that order. Named tasks first in the order said, the rest after in the default order. Not a demo -> None."""
+    if not DEMO_RE.search(text or ""):
+        return None
+    first = {}
+    for task, words in DEMO_WORDS.items():
+        m = re.search(r"\b(" + words + r")\b", text, re.I)
+        if m:
+            first[task] = m.start()
+    said = sorted(first, key=first.get)
+    return said + [t for t in DEMO_ORDER if t not in said]
+
+
 def is_stop(text):
     text = text or ""
     return bool(STOP_RE.search(text)) or (len(text.split()) <= 3 and bool(SHORT_STOP_RE.search(text)))
@@ -70,6 +90,11 @@ def interpret(text, client=None, use_ai=None):
     text = (text or "").strip()[:300]
     if is_stop(text):
         return {"action": "stop", "say": "Stopping.", "source": "local"}
+    order = demo_order(text)
+    if order:
+        names = {"tissue": "a tissue", "medicine": "your medicine", "thermometer": "your temperature"}
+        say = "Starting the demo: " + ", ".join(names[o] for o in order[:-1]) + ", then " + names[order[-1]] + "."
+        return {"action": "demo", "order": order, "say": say, "source": "local"}
     if not text:
         return {"action": "none", "say": "Sorry, I didn't catch that.", "source": "local"}
     if use_ai is None:

@@ -432,6 +432,7 @@ class RealRobot:
                 raise
             print(f"  hand-over refused ({_why(e)}); keeping the tissue up here")
             raise MoveError("no safe path to your hand; I'm holding the tissue up high", holding=True) from e
+        print("  handing over")             # the dashboard says "Here's your tissue" on this line
         await asyncio.sleep(hold_s)
         await self.gripper.open()
         await self.back_from_handoff(data)   # end at 'high' so `medicine` can follow directly (7:15 PM)

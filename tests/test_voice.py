@@ -91,3 +91,20 @@ def test_bridge_say_never_starts_the_arm():
     out = bridge.say(r, "my medicine please", interpret=lambda t: {"action": "medicine", "say": "ok", "source": "ai"})
     assert out["action"] == "medicine" and out["text"] == "my medicine please"
     assert r.status()["busy"] is False and r.run_id == 0      # the nurse's Start click runs it, not the voice
+
+
+@pytest.mark.parametrize("text,order", [
+    ("start the demo", ["tissue", "medicine", "thermometer"]),
+    ("start the demo, default order", ["tissue", "medicine", "thermometer"]),
+    ("run the demo: thermometer, then medicine, then tissue", ["thermometer", "medicine", "tissue"]),
+    ("start the demo with my medicine first", ["medicine", "tissue", "thermometer"]),
+])
+def test_start_the_demo_in_the_order_said(text, order):
+    """Sat 12 PM: 'start the demo' runs the default order; naming tasks picks the order (the rest follow)."""
+    client = FakeClient('{"action": "none", "say": "x"}')
+    out = voice.interpret(text, client=client)
+    assert out["action"] == "demo" and out["order"] == order and client.calls == 0   # local, no AI
+
+
+def test_a_plain_request_is_not_a_demo():
+    assert voice.interpret("can I have my medicine", use_ai=False)["action"] == "medicine"

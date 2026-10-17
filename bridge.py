@@ -35,6 +35,8 @@ ROUTINES = {
     "tissue": (["tissue"], 74, [
         ("", "Looking for the tissue box"),
         ("tissue_box at", "Pulling one tissue out"),
+        ("handing over", "Handing it over"),
+        ("pill_above -> high", "Returning to the start pose"),
         ("joint", "Returning to the start pose"),
     ]),
     "to_high": (["to_high"], 30, [("", "Moving to the start pose")]),
