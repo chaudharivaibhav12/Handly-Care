@@ -586,4 +586,4 @@ def test_drop_cap_carries_high_then_straight_down_over_the_cup():
     assert xyz == [(369.0, -14.0, drop + config.CAP_DROP_CLEAR_MM), (369.0, -14.0, drop),
                    (369.0, -14.0, drop + config.CAP_DROP_CLEAR_MM)]
     assert [c["straight"] for c in motion.calls] == [False, True, True]
-    assert gripper.log == ["open"]
+    assert log == [("move",) + xyz[0], ("move",) + xyz[1], "open", ("move",) + xyz[2]]   # lets go at the bottom
