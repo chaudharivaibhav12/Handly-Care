@@ -280,15 +280,15 @@ class RealRobot:
         await self.move_to(dx, dy, z, straight=True)         # straight up, clear of it
         return True
 
-    async def replay(self, data, steps):
+    async def replay(self, data, steps, start="high"):
         """Run taught.py steps: joint moves through named poses at the drawer speed cap, gripper open/grab, waits.
-        No motion planner (blind): poses must be taught with clear space. Starts only near 'high'."""
+        No motion planner (blind): poses must be taught with clear space. Starts only near the `start` pose."""
         from viam.proto.component.arm import JointPositions, MoveOptions
         opts = MoveOptions(max_vel_degs_per_sec=config.DRAWER_MAX_VEL_DEGS,
                            max_acc_degs_per_sec2=config.DRAWER_MAX_ACC_DEGS)
         # The first move (from wherever the arm is to the first pose) is not taught, and joint moves are blind.
         now = (await self.arm.get_joint_positions()).values
-        jump = max(abs(a - b) for a, b in zip(now, data["high"]["joints"]))
+        jump = max(abs(a - b) for a, b in zip(now, data[start]["joints"]))
         if jump > config.DRAWER_MAX_FIRST_JUMP_DEG:
             raise MoveError(f"I'm too far from the start pose ({jump:.0f} deg on one joint); "
                             f"move me near 'high' first", holding=False)
@@ -530,10 +530,24 @@ class RealRobot:
         await self.move_to(x, y, travel, straight=True)                    # back up, clear of the cup
 
     async def pour(self):
-        """Arm at 'high', bottle (cap off) on its spot: pick it up, pour into the cup, put it back (taught poses)."""
+        """Arm at 'high', bottle (cap off) on slot 2: pick it up, pour into the slot 1 cup, stand it back on slot 2.
+        'high' -> bottle_approach is a ~95 deg jump on several joints, too big to replay blind across the table, so
+        the PLANNER takes the arm there (around the table and walls), and the taught replay continues only if it
+        arrived in the taught arm shape. Back to 'high' the careful way (to_high)."""
         import taught
         data = taught.load()
-        await self.replay(data, taught.pour_sequence(data, config.POUR_HOLD_S))
+        steps = taught.pour_sequence(data, config.POUR_HOLD_S, config.BOTTLE_HOLD_POS)    # checks the poses first
+        await self.gripper.open()
+        a = data["bottle_approach"]["pose"]
+        await self.move_to(a["x"], a["y"], a["z"], theta=a["theta"], o=(a["o_x"], a["o_y"], a["o_z"]),
+                           max_vel=config.POUR_APPROACH_VEL_DEGS)       # a big planned swing: not at full speed
+        now = list((await self.arm.get_joint_positions()).values)
+        gap = max(abs(x - y) for x, y in zip(now, data["bottle_approach"]["joints"]))
+        if gap > config.HANDOFF_JOINT_MATCH_DEG:
+            raise MoveError(f"reached the bottle in a different arm shape ({gap:.0f} deg off the taught one); "
+                            f"not replaying from here", holding=False)
+        await self.replay(data, steps, start="bottle_approach")
+        await self.to_high()
 
     async def thermometer(self):
         """Arm at 'high': pick the IR thermometer off its taped spot, point it at the ball so its light shows,

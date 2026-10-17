@@ -60,11 +60,16 @@ def test_needs_its_poses():
         taught.cap_sequence(taught.load())
 
 
-def test_pour_tilts_slowly_and_puts_the_bottle_back(monkeypatch):
-    """Sat 2 PM: bottle on slot 2 -> fill the slot 1 cup -> bottle back where it was, hand open."""
+def _teach_pour():
+    for i, n in enumerate(["bottle_approach", "bottle_grip", "bottle_lift", "pour"]):
+        taught.save(n, [30.0 + i] * 6, {"x": 400.0, "y": 80.0, "z": 260.0, "o_x": 1.0, "o_y": 0.0, "o_z": 0.0,
+                                        "theta": 0.0})
+
+
+def test_pour_tilts_slowly_straightens_and_stands_the_bottle_back(monkeypatch):
+    """Sat 2:10 PM (Vaibhav's poses): hold at 550, lift beside the slot 1 cup, slow tilt, slow upright, back on slot 2."""
     r, seen, log = setup(monkeypatch)
-    for i, n in enumerate(["bottle_approach", "bottle_grip", "bottle_lift", "pour_above", "pour"]):
-        taught.save(n, [30.0 + i] * 6, {"x": 0, "y": 0, "z": 200})
+    _teach_pour()
     speeds = []
     arm_through = r.arm.move_through_joint_positions
 
@@ -72,14 +77,29 @@ def test_pour_tilts_slowly_and_puts_the_bottle_back(monkeypatch):
         speeds.append(options.max_vel_degs_per_sec)
         return await arm_through(positions, options, **kw)
     r.arm.move_through_joint_positions = through
-    run(r.pour())
+    r.arm.at = taught.load()["bottle_approach"]["joints"]            # the planner brought it there
     d = taught.load()
+    run(r.replay(d, taught.pour_sequence(d, 3.0, 550), start="bottle_approach"))
     by = {tuple(v["joints"]): n for n, v in d.items()}
-    path = [[by[tuple(j)] for j in s] for s in seen]
-    assert path == [["bottle_approach"], ["bottle_grip"], ["bottle_lift", "pour_above"], ["pour"], ["pour_above"],
-                    ["bottle_lift", "bottle_grip"], ["bottle_approach", "high"]]
-    assert speeds[3] == speeds[4] == config.POUR_VEL_DEGS            # the tilt in and out is the slow one
-    assert log == ["release", "grab", "release"]                      # lets go only back on its spot
+    assert [[by[tuple(j)] for j in s] for s in seen] == [["bottle_grip"], ["bottle_lift"], ["pour"], ["bottle_lift"],
+                                                         ["bottle_grip"], ["bottle_approach"]]
+    assert speeds[2] == speeds[3] == config.POUR_VEL_DEGS            # the tilt in and the straightening are slow
+    assert log == [("set", 550), "release"]                          # holds at 550, lets go only back on slot 2
+
+
+def test_pour_stops_if_the_planner_arrives_in_another_arm_shape(monkeypatch):
+    """'high' -> bottle_approach is a 95 deg jump: planned, and the blind replay only continues from the taught shape."""
+    r, seen, log = setup(monkeypatch)
+    _teach_pour()
+
+    class Motion:
+        async def move(self, **kw):
+            return True
+    r.motion = Motion()
+    r.arm.at = [90.0] * 6                                             # somewhere else entirely
+    with pytest.raises(MoveError, match="different arm shape"):
+        run(r.pour())
+    assert seen == []                                                 # no blind replay
 
 
 def test_water_runs_cap_drop_then_pour():

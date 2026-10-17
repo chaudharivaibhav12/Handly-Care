@@ -218,6 +218,8 @@ CAP_DROP_CLEAR_MM = 80.0        # carry height at least this far above the drop 
 POUR_VEL_DEGS = 10.0            # the tilt into and out of the pour: slow, no splash
 POUR_ACC_DEGS = 20.0
 POUR_HOLD_S = 3.0               # keep pouring this long
+BOTTLE_HOLD_POS = 550           # gripper opening that holds the bottle without crushing it (Vaibhav, tools/gripper_pos.py)
+POUR_APPROACH_VEL_DEGS = 30.0   # the planned move from 'high' to bottle_approach (a ~95 deg swing)
 DRAWER_CLOSE_SHORT_MM = 10.0
 DRAWER_EXTRA_OPEN_MM = 30.0    # pull this far past the taught 'open' (6:31 PM: wanted ~3 cm more); 0 = as taught   # close stops this short of 'grip' (5:35 PM: full close pushed the box back ~1 cm)
 DRAWER_MAX_FIRST_JUMP_DEG = 45.0
