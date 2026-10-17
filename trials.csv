@@ -73,3 +73,4 @@ time,command,object,from,to,grabbed,error_mm,note
 19:21:15,tissue,tissue_box,"337,269",handoff,1,,"try3: one tissue handed over; chain from high via lean-back, ended with to_high"
 19:22:27,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
 19:23:02,medicine,pill_box,drawer,handoff,1,,rehearsal 7:21 right after tissue: all good (Vaibhav)
+20:39:47,drawer,middle_drawer,,close,1,,y
