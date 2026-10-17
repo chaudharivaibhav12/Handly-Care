@@ -151,7 +151,7 @@ def last_reason(lines):
     return lines[-1].strip() if lines else ""
 
 
-def make_handler(runner):
+def make_handler(runner, interpret=None):
     class Handler(SimpleHTTPRequestHandler):
         def __init__(self, *a, **kw):
             super().__init__(*a, directory=WEB, **kw)
@@ -206,8 +206,29 @@ def make_handler(runner):
                 stopped = runner.stop()
                 print("[bridge] STOP from the dashboard" + ("" if stopped else " (nothing running)"))
                 return self._json(200, {"stopped": stopped})
+            if self.path == "/api/say":
+                return self._json(200, say(runner, str(body.get("text", "")), interpret))
             return self._json(404, {"error": "not found"})
     return Handler
+
+
+def say(runner, text, interpret=None):
+    """A spoken request -> what the page should do. "stop" stops right here, even mid-run; anything else is
+    only a suggestion: the page shows it and the nurse clicks Start (the arm never moves on voice alone)."""
+    import voice
+    interpret = interpret or voice.interpret
+    if voice.is_stop(text):                  # before the AI and before the busy check: always instant
+        stopped = runner.stop()
+        print(f"[bridge] voice STOP: {text!r}" + ("" if stopped else " (nothing running)"))
+        return {"action": "stop", "say": "Stopping." if stopped else "Okay, I'm not moving.", "source": "local",
+                "text": text}
+    st = runner.status()
+    if st["busy"]:
+        return {"action": "busy", "say": f"One moment, I'm still busy with {st['task'].replace('_', ' ')}.",
+                "source": "local", "text": text}
+    out = dict(interpret(text), text=text)
+    print(f"[bridge] voice {text!r} -> {out['action']} ({out['source']})")
+    return out
 
 
 def main(argv=None):
@@ -215,6 +236,11 @@ def main(argv=None):
     p.add_argument("--sim", action="store_true", help="run app.py --sim (no arm)")
     p.add_argument("--port", type=int, default=PORT)
     args = p.parse_args(argv)
+    try:                                     # AI key for voice requests (app.py loads it itself)
+        from dotenv import load_dotenv
+        load_dotenv(os.path.join(ROOT, ".env"))
+    except ImportError:
+        pass
     runner = Runner(sim=args.sim)
     server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(runner))   # this laptop only
     print(f"Handly Care bridge{' (SIMULATED arm)' if args.sim else ''}: open http://localhost:{args.port}  (Ctrl+C to quit)")

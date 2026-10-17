@@ -239,7 +239,17 @@ th.r,td.r{text-align:right}
   .ent .who,.ent .rm{display:none}
   .readout{grid-template-columns:minmax(0,1fr)}
 }
-.armout{margin:0;max-height:260px;overflow:auto;font:12px/1.45 ui-monospace,Consolas,monospace;white-space:pre-wrap;color:var(--text2)}
+.armout{margin:0;max-height:320px;overflow:auto;font:12px/1.5 ui-monospace,Consolas,monospace;white-space:pre-wrap;color:var(--text2);padding:12px 16px}
+.fullpanel{margin-top:20px}
+.fullpanel .readout{display:block}
+.voicebar{flex-basis:100%;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.voicebar input{font:inherit;font-size:13px;height:30px;padding:0 10px;border:1px solid var(--line2);border-radius:6px;background:var(--panel);color:var(--text);flex:1 1 280px;min-width:0}
+.voiceout{flex-basis:100%;font-size:13px;color:var(--text2);min-height:18px}
+.voiceout b{color:var(--text)}
+.micdot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.6}
+#btnMic.listening{background:var(--red);border-color:var(--red)}
+#btnMic.listening .micdot{opacity:1;animation:micpulse 1s infinite}
+@keyframes micpulse{50%{opacity:.2}}
 </style>
 </head>
 <body>
@@ -286,6 +296,12 @@ th.r,td.r{text-align:right}
         <button id="btnSound" class="btn" aria-pressed="false">Sound off</button>
         <button id="btnReset" class="btn ghost">Reset</button>
       </div>
+      <form class="voicebar" id="voiceForm" autocomplete="off" aria-label="Voice request">
+        <button type="button" id="btnMic" class="btn primary" title="Speak a request (key: M)"><span class="micdot" aria-hidden="true"></span><span id="btnMicText">Speak</span></button>
+        <input type="text" id="voiceText" placeholder="…or type what the patient says, e.g. “Can I have my medicine?”" spellcheck="false">
+        <button type="submit" class="btn">Send</button>
+        <span class="voiceout" id="voiceOut" aria-live="polite"></span>
+      </form>
     </header>
 
     <div class="content gutter-r" id="top">
@@ -368,12 +384,12 @@ th.r,td.r{text-align:right}
                 <span class="btnrow"><button id="btnTest" class="btn primary">Arm to start pose</button><button id="btnLiveStop" class="btn danger">Emergency Stop</button></span>
               </div>
             </section>
-            <section class="panel" aria-labelledby="hPos">
-              <div class="phead"><h2 id="hPos">Arm output</h2><span class="pmeta" id="movingState">No data</span></div>
-              <div class="readout" id="readout"></div>
-            </section>
           </div>
         </div>
+        <section class="panel fullpanel" aria-labelledby="hPos">
+          <div class="phead"><h2 id="hPos">Arm output</h2><span class="pmeta" id="movingState">No data</span></div>
+          <div class="readout" id="readout"></div>
+        </section>
       </div>
     </div>
   </div>

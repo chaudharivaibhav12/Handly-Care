@@ -100,6 +100,10 @@ export const live = {
   },
   measure(){ return Promise.reject(new Error('Thermometer is not built yet.')); },
 
+  // A spoken request -> {action: medicine|tissue|to_high|none|stop|busy, say, source}. "stop" stops at once;
+  // nothing else moves the arm by itself (the page asks the nurse first).
+  say(text){ return api('say', { text }); },
+
   async stop(){
     try { await api('stop', {}); } catch (e) { this.error = 'Stop failed: ' + (e.message || e) + '. USE THE HARDWARE E-STOP.'; }
     this.emit();

@@ -347,5 +347,54 @@ $('btnSound').addEventListener('click', ()=>{
 $('btnReset').addEventListener('click', ()=>{ if (live.busy) live.stop(); S = fresh(); renderAll(); });
 document.addEventListener('keydown', e=>{ if((e.key==='n'||e.key==='N') && !e.target.closest('input,textarea,select')) $('btnNext').click(); });
 
+/* Voice: the patient speaks (or the nurse types) a request; the bridge picks ONE allowed routine;
+   the nurse still clicks Start before the arm moves. "Stop" acts at once, even mid-run. */
+const ACTION_LABEL = {medicine:'Medicine', tissue:'Tissue', to_high:'Start pose', none:'No arm task', stop:'STOP', busy:'Busy'};
+function speak(text){ try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } catch {} }
+function voiceOut(html){ $('voiceOut').innerHTML = html; }
+async function handleVoice(text){
+  text = (text||'').trim(); if (!text) return;
+  const n = settings.room, pt = S.rooms[n].pt;
+  if (!live.connected) { voiceOut('Connect the arm first (Arm Setup → Connect).'); return; }
+  log(n,'Patient','Voice request: "'+text+'"'); renderAll();
+  voiceOut(`You said: <b>“${esc(text)}”</b> · thinking…`);
+  let r;
+  try { r = await live.say(text); } catch (e) { voiceOut('Voice request failed: '+esc(e.message||e)); return; }
+  const label = ACTION_LABEL[r.action] || r.action;
+  voiceOut(`You said: <b>“${esc(text)}”</b> → <b>${esc(label)}</b> · “${esc(r.say)}” <span class="t">(${r.source==='ai'?'Claude':r.source})</span>`);
+  speak(r.say);
+  log(n,'Arm', r.say + ' (voice → ' + label + ')');
+  if (r.action === 'none') addItem({sev:'review', room:n, title:'Patient asked: “'+text+'”', detail:'Not an arm task. Arm told the patient the nurse will come.', acts:[["I'll go",'go','primary']]});
+  renderAll();
+  // Let the reply start speaking before the confirm box (it blocks the page).
+  if (r.action === 'medicine') setTimeout(() => armTask(n,'pill box',{lastLabel:'Pill box', doneText:'Handed pill box to '+pt+' (voice request)'}), 400);
+  if (r.action === 'tissue') setTimeout(() => armTask(n,'tissue',{lastLabel:'Tissue', doneText:'Handed a tissue to '+pt+' (voice request)'}), 400);
+  if (r.action === 'to_high') setTimeout(() => runSetup('to_high'), 400);
+}
+function initVoice(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let rec = null, listening = false;
+  const setListening = on => { listening = on; $('btnMic').classList.toggle('listening', on); $('btnMicText').textContent = on ? 'Listening… (click to end)' : 'Speak'; };
+  $('btnMic').addEventListener('click', () => {
+    if (!SR) { voiceOut('Speech needs Chrome or Edge. Type the request instead.'); $('voiceText').focus(); return; }
+    if (listening) { rec.stop(); return; }
+    let final = '', stopSent = false;
+    rec = new SR(); rec.lang = 'en-US'; rec.interimResults = true; rec.maxAlternatives = 1;
+    rec.onresult = e => {
+      let heard = '';
+      for (const res of e.results) { heard += res[0].transcript; if (res.isFinal) final = heard; }
+      voiceOut('Listening… <b>' + esc(heard) + '</b>');
+      // "stop" mid-sentence: act now, don't wait for the end of speech.
+      if (!stopSent && live.busy && /\b(stop|halt|freeze)\b/i.test(heard)) { stopSent = true; final = ''; rec.abort(); handleVoice('stop'); }
+    };
+    rec.onerror = e => { if (e.error !== 'aborted') voiceOut('Microphone: ' + esc(e.error) + (e.error==='not-allowed' ? ' (allow the mic for this page)' : '')); };
+    rec.onend = () => { setListening(false); if (final) handleVoice(final); };
+    try { rec.start(); setListening(true); voiceOut('Listening…'); } catch (e) { voiceOut('Microphone: ' + esc(e.message||e)); }
+  });
+  $('voiceForm').addEventListener('submit', e => { e.preventDefault(); const t = $('voiceText').value; $('voiceText').value = ''; handleVoice(t); });
+  document.addEventListener('keydown', e => { if ((e.key==='m'||e.key==='M') && !e.target.closest('input,textarea,select')) $('btnMic').click(); });
+}
+
 initLive();
+initVoice();
 renderAll();
