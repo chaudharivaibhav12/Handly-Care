@@ -210,6 +210,14 @@ CAP_TWIST_DEG = -120.0          # per twist; MINUS = anticlockwise seen from abo
 CAP_TWIST_VEL_DEGS = 90.0
 CAP_TWIST_ACC_DEGS = 360.0
 WRIST_LIMIT_DEG = 355.0         # xArm6 joint 6 range is +-360 deg
+CAP_CUP_SPOT = "slot3"          # the small cup the cap is dropped into (Sat 2 PM)
+CAP_CUP_HEIGHT_MM = 95.0        # Vaibhav: 9.5 cm tall, 7.8 cm wide
+CAP_DROP_ABOVE_RIM_MM = 30.0    # fingertips this far above the rim when letting go
+CAP_DROP_CLEAR_MM = 80.0        # carry height at least this far above the drop point
+# Pouring (Sat 2 PM): bottle on slot 2, cup to fill on slot 1 (positions are the taught poses, taught.py).
+POUR_VEL_DEGS = 10.0            # the tilt into and out of the pour: slow, no splash
+POUR_ACC_DEGS = 20.0
+POUR_HOLD_S = 3.0               # keep pouring this long
 DRAWER_CLOSE_SHORT_MM = 10.0
 DRAWER_EXTRA_OPEN_MM = 30.0    # pull this far past the taught 'open' (6:31 PM: wanted ~3 cm more); 0 = as taught   # close stops this short of 'grip' (5:35 PM: full close pushed the box back ~1 cm)
 DRAWER_MAX_FIRST_JUMP_DEG = 45.0

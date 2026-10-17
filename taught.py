@@ -166,3 +166,23 @@ def cap_sequence(data, twists=3, deg=-120.0):
         if i < twists - 1:
             steps += [("release", []), ("turned", ["cap_grip", 0.0])]
     return steps + [("turned", ["cap_above", deg])]
+
+
+# Pouring (Sat 2 PM): the uncapped bottle stands on slot 2; the cup to fill is on slot 1.
+#   bottle_approach  fingers open beside the bottle (side grip), not touching it
+#   bottle_grip      fingers around the bottle, about halfway up
+#   bottle_lift      same grip, lifted ~10 cm straight up
+#   pour_above       bottle upright, its opening just above and beside the cup
+#   pour             tilted so the water flows into the cup
+POUR_REQUIRED = ("high", "bottle_approach", "bottle_grip", "bottle_lift", "pour_above", "pour")
+
+
+def pour_sequence(data, hold_s=3.0):
+    """Pick the bottle up, tilt it SLOWLY into the cup, hold, upright, and put it back where it was."""
+    missing = [n for n in POUR_REQUIRED if n not in data]
+    if missing:
+        raise KeyError(f"teach these first with `python app.py joints <name>`: {', '.join(missing)}")
+    return [("release", []), ("move", ["bottle_approach"]), ("move", ["bottle_grip"]), ("grab", []),
+            ("move", ["bottle_lift", "pour_above"]),
+            ("slow", ["pour"]), ("wait", [hold_s]), ("slow", ["pour_above"]),
+            ("move", ["bottle_lift", "bottle_grip"]), ("release", []), ("move", ["bottle_approach", "high"])]

@@ -26,7 +26,8 @@ class FakeClient:
     ("could you get me a tissue", "tissue"),
     ("my nose is running", "tissue"),
     ("go back to your start pose", "to_high"),
-    ("I want a glass of water", "none"),
+    ("I want a glass of water", "water"),
+    ("can you bring me some food", "none"),
     ("help me get out of bed", "none"),
 ])
 def test_keywords(text, action):

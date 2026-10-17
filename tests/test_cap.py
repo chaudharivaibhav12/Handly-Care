@@ -58,3 +58,33 @@ def test_needs_its_poses():
     teach_all()
     with pytest.raises(KeyError, match="cap_above"):
         taught.cap_sequence(taught.load())
+
+
+def test_pour_tilts_slowly_and_puts_the_bottle_back(monkeypatch):
+    """Sat 2 PM: bottle on slot 2 -> fill the slot 1 cup -> bottle back where it was, hand open."""
+    r, seen, log = setup(monkeypatch)
+    for i, n in enumerate(["bottle_approach", "bottle_grip", "bottle_lift", "pour_above", "pour"]):
+        taught.save(n, [30.0 + i] * 6, {"x": 0, "y": 0, "z": 200})
+    speeds = []
+    arm_through = r.arm.move_through_joint_positions
+
+    async def through(positions, options=None, **kw):
+        speeds.append(options.max_vel_degs_per_sec)
+        return await arm_through(positions, options, **kw)
+    r.arm.move_through_joint_positions = through
+    run(r.pour())
+    d = taught.load()
+    by = {tuple(v["joints"]): n for n, v in d.items()}
+    path = [[by[tuple(j)] for j in s] for s in seen]
+    assert path == [["bottle_approach"], ["bottle_grip"], ["bottle_lift", "pour_above"], ["pour"], ["pour_above"],
+                    ["bottle_lift", "bottle_grip"], ["bottle_approach", "high"]]
+    assert speeds[3] == speeds[4] == config.POUR_VEL_DEGS            # the tilt in and out is the slow one
+    assert log == ["release", "grab", "release"]                      # lets go only back on its spot
+
+
+def test_water_runs_cap_drop_then_pour():
+    import app
+    from conftest import sim
+    robot = sim()
+    assert run(app.run_command(robot, ["water"])) is True
+    assert robot.drawer_moves == ["cap", "drop_cap", "to_high", "pour"]

@@ -40,10 +40,25 @@ ROUTINES = {
         ("joint", "Returning to the start pose"),
     ]),
     "to_high": (["to_high"], 30, [("", "Moving to the start pose")]),
-    "cap": (["cap"], 40, [
+    "cap": (["cap"], 60, [
         ("", "Reaching for the cap"),
         ("cap_grip:", "Unscrewing the cap"),
         ("cap_above wrist", "Lifting the cap off"),
+        ("cap dropped", "Returning to the start pose"),
+    ]),
+    "pour": (["pour"], 60, [
+        ("", "Picking up the bottle"),
+        ("pour_above:", "Pouring the water"),
+        ("slow pour_above", "Putting the bottle back"),
+    ]),
+    "water": (["water"], 120, [
+        ("", "Reaching for the cap"),
+        ("cap_grip:", "Unscrewing the cap"),
+        ("cap_above wrist", "Lifting the cap off"),
+        ("cap dropped", "Returning to the start pose"),
+        ("bottle_approach:", "Picking up the bottle"),
+        ("pour_above:", "Pouring the water"),
+        ("slow pour_above", "Putting the bottle back"),
     ]),
     "thermometer": (["thermometer"], 35, [
         ("", "Picking up the thermometer"),

@@ -16,7 +16,7 @@
     python app.py tissue [name]             # look, pinch one tissue from the pop-up box, hand it over, end at 'high'
     python app.py to_high                   # safely to the drawer's 'high' pose, one joint at a time
     python app.py thermometer               # from 'high': pick up the thermometer, point it at the ball, put it back
-    python app.py cap                       # from 'high': unscrew a bottle cap (someone holds the bottle), lift it off
+    python app.py cap | pour | water        # from 'high': unscrew the cap -> slot 3 cup | fill the slot 1 cup | both
     python app.py objects               # what the camera sees, in world mm (Milestone 2)
     python app.py calibrate red_cube=slot1 blue_cube=slot2 cup=slot3
                                         # objects placed on taught spots -> camera correction
@@ -292,21 +292,31 @@ async def run_command(robot, cmd):
         note = ask_note("did the patient get it? (y/n/comment, Enter to skip): ")
         trials.log(cmd[0], "pill_box", "drawer", "handoff", True, None, note=note or "ran (outcome not checked)")
         return True
-    elif cmd[0] == "cap" and len(cmd) == 1:
-        # From 'high', a person holding the bottle: unscrew the cap with re-grip twists, lift it off, keep holding it.
+    elif cmd[0] in ("cap", "pour", "water") and len(cmd) == 1:
+        # From 'high'. cap: a person holds the bottle on slot 2; unscrew the cap, drop it in the slot 3 cup,
+        # back to 'high'. pour: pick the open bottle up, fill the slot 1 cup, put it back. water: both (Sat 2 PM).
+        step = "start"
         try:
-            await robot.cap()
+            if cmd[0] in ("cap", "water"):
+                step = "unscrewing the cap"
+                await robot.cap()
+                step = "dropping the cap"
+                await robot.drop_cap(config.ALL_SPOTS[config.CAP_CUP_SPOT], config.CAP_CUP_HEIGHT_MM)
+                step = "going back to 'high'"
+                await robot.to_high()
+            if cmd[0] in ("pour", "water"):
+                step = "pouring"
+                await robot.pour()
         except KeyError as e:
             print(f"can't do that yet: {e.args[0]}")
             return False
-        except MoveError as e:
-            print(f"stopped: {e}")
-            trials.log("cap", "bottle_cap", "bottle", "lifted", False, None, note=f"move error: {e}")
+        except Exception as e:  # noqa: BLE001 -- MoveError or a planner refusal: stop where we are, say what
+            print(f"stopped while {step}: {e}")
+            trials.log(cmd[0], "bottle", "slot2", "slot1", False, None, note=f"stopped while {step}: {e}")
             return False
-        print("cap: done (holding the cap)")
-        note = ask_note("cap off? (y/n/comment, Enter to skip): ")
-        trials.log("cap", "bottle_cap", "bottle", "lifted", True, None,
-                   note=note or f"ran, {config.CAP_TWISTS} x {config.CAP_TWIST_DEG:+.0f} deg (outcome not checked)")
+        print(f"{cmd[0]}: done")
+        note = ask_note("did it work? (y/n/comment, Enter to skip): ")
+        trials.log(cmd[0], "bottle", "slot2", "slot1", True, None, note=note or "ran (outcome not checked)")
         return True
     elif cmd[0] == "thermometer" and len(cmd) == 1:
         # From 'high': pick up the IR thermometer, point it at the ball (light visible), put it back.

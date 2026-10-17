@@ -6,6 +6,7 @@ export const POSES = [   // the real arm's routines (shown in Arm Setup)
   { key: 'medicine', label: 'Medicine',        hint: 'Open the drawer, hand over the pill box, close it (~60 s). Drawer SHUT before.' },
   { key: 'tissue',   label: 'Tissue',          hint: 'Find the tissue box, hand over one tissue, end at the start pose (~75 s).' },
   { key: 'thermometer', label: 'Thermometer', hint: 'Pick up the thermometer, point it at the ball (light), put it back (~30 s).' },
+  { key: 'water', label: 'Water', hint: 'Hold the bottle on slot 2: unscrew the cap into the slot 3 cup, then fill the slot 1 cup (~1.5 min).' },
   { key: 'to_high',  label: 'Start pose',      hint: "Bring the arm to 'high' from anywhere, one joint at a time." },
 ];
 
@@ -14,6 +15,7 @@ const CHECKS = {
   medicine: 'Drawer SHUT, pill box on its spot, arm at the start pose, hand on the E-stop.',
   tissue:   'Tissue box TAPED down with a tissue sticking up, arm at the start pose, hand on the E-stop.',
   to_high:  'Path clear around the arm, hand on the E-stop.',
+  water: 'Bottle on slot 2, cap a little loose, someone HOLDING it firmly; small cup on slot 3; cup to fill on slot 1 with a tray under it; arm at the start pose; hand on the E-stop.',
   thermometer: 'Thermometer on its taped spot, ball on its spot, nobody in the swing path, arm at the start pose, hand on the E-stop.',
 };
 
@@ -49,6 +51,7 @@ export const live = {
     const s = String(item || '').toLowerCase();
     if (s.includes('pill') || s.includes('medic')) return 'medicine';
     if (s.includes('tissue')) return 'tissue';
+    if (s.includes('water')) return 'water';
     return null;
   },
   checklist(task){ return CHECKS[task] || ''; },

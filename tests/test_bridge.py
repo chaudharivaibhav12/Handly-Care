@@ -38,7 +38,7 @@ def wait_result(r, timeout=10):
 
 
 def test_real_routines_are_only_the_tested_ones():
-    assert set(bridge.ROUTINES) == {"medicine", "tissue", "thermometer", "to_high", "cap"}
+    assert set(bridge.ROUTINES) == {"medicine", "tissue", "thermometer", "to_high", "cap", "pour", "water"}
     r = bridge.Runner(sim=True)
     assert r._app_command(["medicine"])[-2:] == ["medicine", "--sim"]
 

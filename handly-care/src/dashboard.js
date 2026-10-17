@@ -91,6 +91,9 @@ const CUES = {
   'Handing it over': "Here's your tissue.",
   'Picking up the thermometer': 'Let me check your temperature.',
   'Measuring': 'Measuring.',
+  'Unscrewing the cap': 'Opening your bottle. Please hold it steady.',
+  'Pouring the water': 'Pouring your water.',
+  'Putting the bottle back': "Here's your water.",
 };
 const DONE_CUES = { temp: 'Done. Your nurse will see the reading.' };
 function cue(text){ try { speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } catch {} }
@@ -346,6 +349,7 @@ function initLive(){
     const task = b.dataset.capture, n = settings.room;
     if (task === 'medicine') return armTask(n,'pill box',{lastLabel:'Pill box', doneText:'Handed pill box to '+S.rooms[n].pt+' (from Arm Setup)'});
     if (task === 'tissue') return armTask(n,'tissue',{lastLabel:'Tissue', doneText:'Handed a tissue to '+S.rooms[n].pt+' (from Arm Setup)'});
+    if (task === 'water') return armTask(n,'water',{lastLabel:'Water', doneText:'Poured a cup of water for '+S.rooms[n].pt+' (from Arm Setup)'});
     if (task === 'thermometer') return armTask(n,'IR thermometer',{kind:'temp', count:false, lastLabel:'Temp check', doneText:'Temperature 38.4 °C (demo reading) (from Arm Setup)'});
     runSetup(task);
   });
@@ -407,7 +411,7 @@ document.addEventListener('keydown', e=>{ if((e.key==='n'||e.key==='N') && !e.ta
 
 /* Voice: the patient speaks (or the nurse types) a request; the bridge picks ONE allowed routine;
    the nurse still clicks Start before the arm moves. "Stop" acts at once, even mid-run. */
-const ACTION_LABEL = {demo:'Start demo', medicine:'Medicine', tissue:'Tissue', thermometer:'Temperature check', to_high:'Start pose', none:'No arm task', stop:'STOP', busy:'Busy'};
+const ACTION_LABEL = {demo:'Start demo', water:'Water', medicine:'Medicine', tissue:'Tissue', thermometer:'Temperature check', to_high:'Start pose', none:'No arm task', stop:'STOP', busy:'Busy'};
 function speak(text){ try { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(text)); } catch {} }
 function voiceOut(html){ $('voiceOut').innerHTML = html; }
 async function handleVoice(text){
@@ -428,6 +432,7 @@ async function handleVoice(text){
   if (r.action === 'medicine') setTimeout(() => armTask(n,'pill box',{lastLabel:'Pill box', doneText:'Handed pill box to '+pt+' (voice request)'}), 400);
   if (r.action === 'tissue') setTimeout(() => armTask(n,'tissue',{lastLabel:'Tissue', doneText:'Handed a tissue to '+pt+' (voice request)'}), 400);
   if (r.action === 'thermometer') setTimeout(() => armTask(n,'IR thermometer',{kind:'temp', count:false, lastLabel:'Temp check', doneText:'Temperature 38.4 °C (demo reading), flagged for nurse review (voice request)'}), 400);
+  if (r.action === 'water') setTimeout(() => armTask(n,'water',{lastLabel:'Water', doneText:'Poured a cup of water for '+pt+' (voice request)'}), 400);
   if (r.action === 'to_high') setTimeout(() => runSetup('to_high'), 400);
   if (r.action === 'demo') setTimeout(() => startDemo(r.order), 400);
 }

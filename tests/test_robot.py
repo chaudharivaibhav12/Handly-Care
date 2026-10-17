@@ -575,3 +575,15 @@ def test_after_the_tissue_an_unexpected_arm_configuration_goes_the_careful_way()
     robot.to_high = careful
     run(robot.back_from_handoff(data))
     assert called == [1] and robot.arm.moves == []
+
+
+def test_drop_cap_carries_high_then_straight_down_over_the_cup():
+    """Sat 2 PM: cap into the 9.5 cm cup on slot 3: never sweep low past the bottle, let go just above the rim."""
+    robot, motion, gripper, log = make()
+    run(robot.drop_cap((369.0, -14.0), 95.0))
+    drop = config.TABLE_Z + 95.0 + config.CAP_DROP_ABOVE_RIM_MM
+    xyz = [c["xyz"] for c in motion.calls]
+    assert xyz == [(369.0, -14.0, drop + config.CAP_DROP_CLEAR_MM), (369.0, -14.0, drop),
+                   (369.0, -14.0, drop + config.CAP_DROP_CLEAR_MM)]
+    assert [c["straight"] for c in motion.calls] == [False, True, True]
+    assert gripper.log == ["open"]

@@ -354,6 +354,12 @@ class RealRobot:
                 await through(args, fast)
                 print(f"  FAST {' -> '.join(args)}: {time.time() - t0:.1f} s")
                 t0 = time.time()
+            elif kind == "slow":
+                # the pour tilt: slower than the drawer cap so the water doesn't slosh out
+                await through(args, MoveOptions(max_vel_degs_per_sec=config.POUR_VEL_DEGS,
+                                                max_acc_degs_per_sec2=config.POUR_ACC_DEGS))
+                print(f"  slow {' -> '.join(args)}: {time.time() - t0:.1f} s")
+                t0 = time.time()
             elif kind == "turned":
                 # A taught pose with the last wrist joint turned by `deg` (the cap twist). xArm6 joint 6: +-360 deg.
                 name, deg = args
@@ -509,6 +515,26 @@ class RealRobot:
         data = taught.load()
         await self.replay(data, taught.cap_sequence(data, config.CAP_TWISTS, config.CAP_TWIST_DEG))
 
+    async def drop_cap(self, xy, rim_h):
+        """Holding the cap above the bottle: carry it at the current height to above the cup at xy (calibrated
+        slot), straight down to CAP_DROP_ABOVE_RIM_MM over the rim (rim_h mm above the table), let go, back up.
+        Same-height carry first so it never sweeps low past the bottle (Sat 2 PM)."""
+        x, y = xy
+        here = await self.where()
+        drop_z = config.TABLE_Z + rim_h + config.CAP_DROP_ABOVE_RIM_MM
+        travel = max(here.z, drop_z + config.CAP_DROP_CLEAR_MM)
+        await self.move_to(x, y, travel)                                   # over the cup, pointing down
+        await self.move_to(x, y, drop_z, straight=True)                    # down to just above the rim
+        await self.gripper.open()
+        print("  cap dropped")
+        await self.move_to(x, y, travel, straight=True)                    # back up, clear of the cup
+
+    async def pour(self):
+        """Arm at 'high', bottle (cap off) on its spot: pick it up, pour into the cup, put it back (taught poses)."""
+        import taught
+        data = taught.load()
+        await self.replay(data, taught.pour_sequence(data, config.POUR_HOLD_S))
+
     async def thermometer(self):
         """Arm at 'high': pick the IR thermometer off its taped spot, point it at the ball so its light shows,
         put it back. Mode "press" (THERM_MODE): hold it gently, click the button only at the ball.
@@ -604,6 +630,12 @@ class SimRobot:
 
     async def cap(self):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["cap"]
+
+    async def drop_cap(self, xy, rim_h):
+        self.drawer_moves = getattr(self, "drawer_moves", []) + ["drop_cap"]
+
+    async def pour(self):
+        self.drawer_moves = getattr(self, "drawer_moves", []) + ["pour"]
 
     async def to_high(self, log=print):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["to_high"]
