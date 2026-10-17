@@ -587,3 +587,10 @@ def test_drop_cap_carries_high_then_straight_down_over_the_cup():
                    (369.0, -14.0, drop + config.CAP_DROP_CLEAR_MM)]
     assert [c["straight"] for c in motion.calls] == [False, True, True]
     assert log == [("move",) + xyz[0], ("move",) + xyz[1], "open", ("move",) + xyz[2]]   # lets go at the bottom
+
+
+def test_drop_cap_at_a_taught_height():
+    """Sat 2:30: the calibrated slot missed the cup; the hand-shown cap_drop spot gives x, y AND the drop height."""
+    robot, motion, gripper, log = make()
+    run(robot.drop_cap((350.0, -20.0), 95.0, drop_z=200.0))
+    assert [c["xyz"] for c in motion.calls][1] == (350.0, -20.0, 200.0)

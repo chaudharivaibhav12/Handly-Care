@@ -102,3 +102,4 @@ time,command,object,from,to,grabbed,error_mm,note
 13:59:02,cap,bottle_cap,bottle,lifted,1,,y
 14:19:04,pour,bottle,slot2,slot1,0,,"stopped while pouring: (<Status.UNKNOWN: 2>, 'all IK solutions failed constraints. Failures: { robot constraint: violation between arm:lower_forearm and wall-front:wall-front geometries: 100.00% }, ', None)"
 14:24:06,pour,bottle,slot2,slot1,1,,y
+14:28:20,water,bottle,slot2,slot1,1,,y
