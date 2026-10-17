@@ -515,13 +515,14 @@ class RealRobot:
         data = taught.load()
         await self.replay(data, taught.cap_sequence(data, config.CAP_TWISTS, config.CAP_TWIST_DEG))
 
-    async def drop_cap(self, xy, rim_h):
+    async def drop_cap(self, xy, rim_h, drop_z=None):
         """Holding the cap above the bottle: carry it at the current height to above the cup at xy (calibrated
         slot), straight down to CAP_DROP_ABOVE_RIM_MM over the rim (rim_h mm above the table), let go, back up.
         Same-height carry first so it never sweeps low past the bottle (Sat 2 PM)."""
         x, y = xy
         here = await self.where()
-        drop_z = config.TABLE_Z + rim_h + config.CAP_DROP_ABOVE_RIM_MM
+        if drop_z is None:
+            drop_z = config.TABLE_Z + rim_h + config.CAP_DROP_ABOVE_RIM_MM
         travel = max(here.z, drop_z + config.CAP_DROP_CLEAR_MM)
         await self.move_to(x, y, travel)                                   # over the cup, pointing down
         await self.move_to(x, y, drop_z, straight=True)                    # down to just above the rim
@@ -651,7 +652,7 @@ class SimRobot:
     async def cap(self):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["cap"]
 
-    async def drop_cap(self, xy, rim_h):
+    async def drop_cap(self, xy, rim_h, drop_z=None):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["drop_cap"]
 
     async def pour(self):
