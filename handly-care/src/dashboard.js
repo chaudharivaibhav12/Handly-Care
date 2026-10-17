@@ -68,7 +68,7 @@ function armTask(n, item, opts){
     const task = live.taskFor(item, opts.kind);
     if (!task) log(n,'System','No real-arm routine for '+item+' yet. Simulating it.');
     else if (live.busy) log(n,'System','Real arm busy. Simulating this hand-over.');
-    else if (!confirm('Real arm: '+item+' for Room '+n+'.\n\nCheck: '+live.checklist(task)+'\n\nStart?')) { log(n,'Nurse','Real-arm '+item+' cancelled before start.'); renderAll(); return; }
+    else if (!(opts.scripted && S.demoChecked) && !confirm('Real arm: '+item+' for Room '+n+'.\n\nCheck: '+live.checklist(task)+'\n\nStart?')) { log(n,'Nurse','Real-arm '+item+' cancelled before start.'); renderAll(); return; }
     else return liveTask(n, item, opts);
   }
   const token = {}; r.token = token; r.arm='working'; r.live=false;
@@ -105,14 +105,14 @@ const SCRIPT = [
   // 1. Tissue: routine request, arm on its own
   ()=>{ log('12','Patient','Voice request: "Could I have a tissue?"');
         log('12','System','Routine request. Sent to arm.');
-        armTask('12','tissue',{requestedAt:S.sim-600}); },
+        armTask('12','tissue',{requestedAt:S.sim-600, scripted:true}); },
   // 2. Pill box: nurse-prepared and released ahead of time, so the arm hands it over right after the tissue
   //    (Vaibhav, Sat 11:50: no Release click in the demo; the confirm box before the run stays)
   ()=>{ log('12','System','03:00 medication box is due. Released in advance by R. Alvarez, RN at 7:15pm · Acetaminophen, docusate.');
-        armTask('12','pill box',{lastLabel:'Pill box', doneText:'Handed nurse-prepared pill box to '+S.rooms['12'].pt+'. Logged to MAR'}); },
+        armTask('12','pill box',{scripted:true, lastLabel:'Pill box', doneText:'Handed nurse-prepared pill box to '+S.rooms['12'].pt+'. Logged to MAR'}); },
   // 3. Temperature: arm measures without contact, nurse reviews
   ()=>{ log('12','System','Scheduled temperature check. Arm announces it before moving.');
-        armTask('12','IR thermometer',{kind:'temp', count:false, lastLabel:'Temp check',
+        armTask('12','IR thermometer',{kind:'temp', scripted:true, count:false, lastLabel:'Temp check',
           phases:[['Announcing temperature check',1500],['Moving slowly near forehead',2500],['Reading temperature',2000],['Returning home',1500]],
           doneText:'Temperature 38.4 °C (demo reading), flagged for nurse review',
           done:()=>{ addItem({sev:'review', room:'12', title:'Temperature 38.4 °C', detail:'Non-contact reading by arm · 37.4 °C at 11pm · POD 2 appendectomy', acts:[["I'll assess",'assess','primary'],['Acknowledge','ack','']]}); }}); },
@@ -348,8 +348,18 @@ document.addEventListener('click', e=>{
   if(b.dataset.speed){ S.speed = +b.dataset.speed; renderControls(); return; }
   if(b.dataset.view) return setView(b.dataset.view, b.dataset.target);
 });
-$('btnRun').addEventListener('click', ()=>{ S.running=!S.running; renderControls(); });
-$('btnNext').addEventListener('click', ()=>{ S.running=true; S.nextAt=S.sim; renderControls(); });
+// One checklist for the whole scripted demo (Vaibhav, Sat 12 PM): asked once before the first beat, then tissue,
+// medicine and thermometer run back to back with no confirm box. Reset clears it. Requests outside the
+// script (voice, Arm Setup, Hand Over) still ask every time.
+function demoCheck(){
+  if (S.step > 0 || S.demoChecked || !live.connected) return true;
+  const ok = confirm('Real arm demo: tissue, then medicine, then thermometer, back to back.\n\nCheck all of it:\n'
+    + '• ' + live.checklist('tissue') + '\n• ' + live.checklist('medicine') + '\n• ' + live.checklist('thermometer') + '\n\nStart?');
+  if (ok) { S.demoChecked = true; log(settings.room,'Nurse','Demo checklist confirmed: tissue, medicine, thermometer.'); }
+  return ok;
+}
+$('btnRun').addEventListener('click', ()=>{ if (!S.running && !demoCheck()) return; S.running=!S.running; renderControls(); });
+$('btnNext').addEventListener('click', ()=>{ if (!demoCheck()) return; S.running=true; S.nextAt=S.sim; renderControls(); });
 $('btnSound').addEventListener('click', ()=>{
   soundOn=!soundOn;
   if(soundOn && !actx){ try{ actx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ soundOn=false; } }
