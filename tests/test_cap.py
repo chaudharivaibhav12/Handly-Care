@@ -33,7 +33,8 @@ def test_three_regrip_twists_then_lift_without_turning_back(monkeypatch):
     run(r.cap())
     wrist = [s[-1][5] for s in seen]
     # above, down, then (twist, back) x2, twist, lift still turned
-    assert wrist == [100.0, 100.0, -20.0, 100.0, -20.0, 100.0, -20.0, -20.0]
+    t = 100.0 + config.CAP_TWIST_DEG
+    assert wrist == [100.0, 100.0, t, 100.0, t, 100.0, t, t]
     assert seen[-1][0][:5] == [5.0] * 5                              # the lift ends at cap_above's arm joints
     assert log == ["release", "grab", "release", "grab", "release", "grab"]   # ends holding the cap
 
