@@ -537,6 +537,12 @@ class RealRobot:
         import taught
         data = taught.load()
         steps = taught.pour_sequence(data, config.POUR_HOLD_S, config.BOTTLE_HOLD_POS)    # checks the poses first
+        if "bottle_via" in data:
+            # Sat 2:19 PM: the planner refused bottle_approach (forearm inside the configured wall-front box, though
+            # the real wall is clear). Taught waypoint instead: high -> bottle_via -> bottle_approach, and back.
+            await self.replay(data, [("release", []), ("move", ["bottle_via", "bottle_approach"])] + steps
+                              + [("move", ["bottle_via", "high"])])
+            return
         await self.gripper.open()
         a = data["bottle_approach"]["pose"]
         await self.move_to(a["x"], a["y"], a["z"], theta=a["theta"], o=(a["o_x"], a["o_y"], a["o_z"]),

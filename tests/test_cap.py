@@ -108,3 +108,18 @@ def test_water_runs_cap_drop_then_pour():
     robot = sim()
     assert run(app.run_command(robot, ["water"])) is True
     assert robot.drawer_moves == ["cap", "drop_cap", "to_high", "pour"]
+
+
+def test_pour_through_a_taught_waypoint_never_uses_the_planner(monkeypatch):
+    """Sat 2:19 PM: the planner refused bottle_approach (configured wall-front box). With bottle_via taught, the arm
+    replays high -> bottle_via -> bottle_approach and back the same way."""
+    r, seen, log = setup(monkeypatch)
+    _teach_pour()
+    taught.save("bottle_via", [20.0] * 6, {"x": 0, "y": 0, "z": 300})
+    r.motion = None                                                   # any planner call would crash
+    run(r.pour())
+    d = taught.load()
+    by = {tuple(v["joints"]): n for n, v in d.items()}
+    path = [[by[tuple(j)] for j in s] for s in seen]
+    assert path[0] == ["bottle_via", "bottle_approach"] and path[-1] == ["bottle_via", "high"]
+    assert ["pour"] in path
