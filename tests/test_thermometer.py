@@ -84,3 +84,13 @@ def test_needs_its_poses_taught(monkeypatch):
 @pytest.mark.parametrize("text", ["can you check my temperature", "I think I have a fever", "I feel hot"])
 def test_voice_asks_for_the_thermometer(text):
     assert voice.interpret(text, use_ai=False)["action"] == "thermometer"
+
+
+def test_press_is_a_short_click_then_back_to_hold():
+    """Sat 11 AM: held down the thermometer doesn't measure: press for click_s only, then hold while it reads."""
+    teach_all()
+    for n in ["therm_above", "therm_grip", "therm_aim"]:
+        taught.save(n, [1.0] * 6, {"x": 0, "y": 0, "z": 0})
+    seq = taught.therm_sequence(taught.load(), "press", 2.0, 260, 250, 0.5)
+    i = seq.index(("move", ["therm_aim"]))
+    assert seq[i + 1:i + 3] == [("click", [250, 260, 0.5]), ("wait", [2.0])]

@@ -125,11 +125,12 @@ def pills_sequence(data, hold_s=3.0):
             ("move", ["pill_above", "high"])]
 
 
-def therm_sequence(data, mode="press", show_s=2.0, hold_pos=None, press_pos=None):
+def therm_sequence(data, mode="press", show_s=2.0, hold_pos=None, press_pos=None, click_s=0.5):
     """Thermometer from its taped spot to pointing at the ball and back. Its button is one click, and the light
     goes off ~2 s later if the button stays pressed (Vaibhav, Sat 12 AM), so:
       press: gripper to hold_pos (holds the body, button NOT pressed) -> normal speed to therm_aim ->
-             press_pos (clicks) -> show -> back to hold_pos (lets the button go) -> put it back
+             click: press_pos for click_s, then back to hold_pos (Sat 11 AM: held down it doesn't measure)
+             -> show -> put it back
       fast:  grab (the grip clicks the button) -> ONE fast move grip -> aim -> show -> put it back"""
     missing = [n for n in THERM_REQUIRED if n not in data]
     if missing:
@@ -144,4 +145,4 @@ def therm_sequence(data, mode="press", show_s=2.0, hold_pos=None, press_pos=None
         raise KeyError("measure THERM_HOLD_POS and THERM_PRESS_POS first with tools/gripper_pos.py "
                        "(or set THERM_MODE = 'fast')")
     return [("release", []), ("move", ["therm_above"]), ("move", ["therm_grip"]), ("set", [hold_pos]),
-            ("move", ["therm_aim"]), ("set", [press_pos]), ("wait", [show_s]), ("set", [hold_pos])] + back
+            ("move", ["therm_aim"]), ("click", [press_pos, hold_pos, click_s]), ("wait", [show_s])] + back

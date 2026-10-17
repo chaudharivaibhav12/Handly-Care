@@ -100,13 +100,15 @@ function addItem(it){ it.id='q'+(S.uid++); it.t=clock(); it.state=''; S.queue.pu
 function removeItem(id){ S.queue = S.queue.filter(q=>q.id!==id); }
 
 const SCRIPT = [
-  // 1. Pill box: nurse-prepared, nurse releases, arm hands it over
-  ()=>{ log('12','System','03:00 medication box is due.');
-        addItem({sev:'approve', room:'12', title:'03:00 meds ready to hand over', detail:'Pill box prepared and verified by R. Alvarez, RN at 7:15pm · Acetaminophen, docusate', acts:[['Release pill box','release','primary'],['Hold','hold','']]}); renderAll(); },
-  // 2. Water
+  // Real-arm order (Vaibhav, Sat): 1 tissue, 2 medicine (drawer), 3 thermometer. Each beat waits for the arm
+  // to finish and for the nurse's approval (scriptWaiting), so the arm never gets a second job mid-run.
+  // 1. Tissue: routine request, arm on its own
   ()=>{ log('12','Patient','Voice request: "Could I have a tissue?"');
         log('12','System','Routine request. Sent to arm.');
         armTask('12','tissue',{requestedAt:S.sim-600}); },
+  // 2. Pill box: nurse-prepared, nurse releases, arm hands it over
+  ()=>{ log('12','System','03:00 medication box is due.');
+        addItem({sev:'approve', room:'12', title:'03:00 meds ready to hand over', detail:'Pill box prepared and verified by R. Alvarez, RN at 7:15pm · Acetaminophen, docusate', acts:[['Release pill box','release','primary'],['Hold','hold','']]}); renderAll(); },
   // Risk: respiratory depression in another room, nurse only
   ()=>{ log('11','Alert','SpO₂ 88% and falling. Arm actions locked for this room.');
         addItem({sev:'critical', room:'11', title:'SpO₂ 88% and falling', detail:'Sleep apnea · opioid at 01:15 · RR 8 · hard to wake · was 95% at 01:40', acts:[['On my way','enroute','danger']]}); renderAll(); },
@@ -123,6 +125,12 @@ const SCRIPT = [
   ()=>{ log('', 'System','End of demo script.'); renderAll(); }
 ];
 function fireStep(){ if(S.step>=SCRIPT.length) return; SCRIPT[S.step++](); S.nextAt = S.sim + STEP_GAP; renderControls(); }
+// Hold the script while the real room's arm works or a nurse approval is open (else the next beat would
+// start mid-run and fall back to a simulation, or the thermometer would jump ahead of the unreleased pill box).
+function scriptWaiting(){
+  const r = S.rooms[settings.room];
+  return live.busy || (r && r.arm === 'working') || S.queue.some(q => q.sev === 'approve');
+}
 
 function act(id, a){
   const it = S.queue.find(q=>q.id===id); if(!it) return;
@@ -326,7 +334,8 @@ setInterval(()=>{
   const due = S.jobs.filter(j=>j.at<=S.sim).sort((a,b)=>a.at-b.at);
   S.jobs = S.jobs.filter(j=>j.at>S.sim);
   due.forEach(j=>j.fn());
-  if(S.step<SCRIPT.length && S.sim>=S.nextAt) fireStep();
+  if(S.step<SCRIPT.length && scriptWaiting()) S.nextAt = Math.max(S.nextAt, S.sim + 3000);   // 3 s after it's free
+  else if(S.step<SCRIPT.length && S.sim>=S.nextAt) fireStep();
   $('clock').textContent = clock();
   tickBars();
 }, 250);

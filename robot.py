@@ -312,6 +312,18 @@ class RealRobot:
                 await self.gripper.do_command({"set": int(args[0])})
                 await asyncio.sleep(config.THERM_GRIPPER_SETTLE_S)
                 print(f"  gripper -> {int(args[0])}")
+            elif kind == "click":
+                # Press a button held in the fingers for a moment, then let it go (no settle wait in between).
+                press, hold, secs = args
+                c0 = time.time()
+                await self.gripper.do_command({"set": int(press)})
+                c1 = time.time()
+                await asyncio.sleep(secs)
+                await self.gripper.do_command({"set": int(hold)})
+                c2 = time.time()
+                # Timings show whether 'set' waits for the fingers (then the press lasts longer than secs).
+                print(f"  click: gripper {int(press)} (set took {c1 - c0:.2f} s) + {secs} s, back to {int(hold)} "
+                      f"(set took {c2 - c1 - secs:.2f} s)")
             elif kind == "fast":
                 await through(args, fast)
                 print(f"  FAST {' -> '.join(args)}: {time.time() - t0:.1f} s")
@@ -437,7 +449,8 @@ class RealRobot:
         import taught
         data = taught.load()
         await self.replay(data, taught.therm_sequence(data, config.THERM_MODE, config.THERM_SHOW_S,
-                                                      config.THERM_HOLD_POS, config.THERM_PRESS_POS))
+                                                      config.THERM_HOLD_POS, config.THERM_PRESS_POS,
+                                                      config.THERM_CLICK_S))
 
     async def stop(self):
         """Emergency-style stop for Ctrl+C. Each call is best effort."""

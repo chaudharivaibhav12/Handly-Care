@@ -160,3 +160,7 @@ Format: `- Fri HH:MM EXP-NNN planned|running|completed: <one line>` or `- Fri HH
 - Sat 10:52 note: tools/goto_pose.py (replay named poses from near high, --grab) to re-teach therm_aim by hand from the grip.
 - Sat 10:55 note: therm_aim re-taught by hand from the grip: (33,599,163), grip→aim max 11.6° (j2). The +4° edit is replaced; therm_aim_taught keeps the first one.
 - Sat 10:56 note: thermometer fast mode feels right to Vaibhav (flick 60°/s, acc 300; rest 15°/s). Kept as is.
+- Sat 11:21 note: thermometer press mode: gripper HOLD 260 (holds, no click), PRESS 250 (clicks, ~1 mm) measured by Vaibhav with tools/gripper_pos.py. Click = 250 for 0.5 s then back to 260 (held down it doesn't measure), then show 2 s. THERM_MODE = press (fast stays as fallback). +1 test.
+- Sat 11:23 note: THERM_CLICK_S 0.5 → 0.1 (Vaibhav).
+- Sat 11:24 note: THERM_CLICK_S 0.1 → 0.01 (still pressed too long); click now prints how long each gripper 'set' takes (does set wait for the fingers?).
+- Sat 11:39 note: dashboard Start demo order = tissue → (nurse releases) medicine → SpO₂ alert (sim, other room) → thermometer → bathroom (sim). Each beat waits until the real arm is free and no approval is open (+3 s). Sim-checked: bridge runs 1 tissue, 2 medicine, 3 thermometer.

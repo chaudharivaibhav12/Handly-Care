@@ -193,9 +193,10 @@ TISSUE_PULL_MM = 250.0            # straight up this far: a pop-up tissue slides
 HANDOFF_HOLD_S = 3.0           # hold the item at the patient's hand this long before letting go
 # Thermometer (Sat): IR thermometer on a taped spot, ball on a taped spot; the light on the ball shows it works.
 # Its button is one click; held down, the light goes off after ~2 s.
-THERM_MODE = "fast"             # "press": hold gently, click at the ball (needs the 2 positions below); "fast": the grip clicks, swing fast
-THERM_HOLD_POS = None           # TODO measure: xArm gripper position (0 closed .. 850 open) that holds it WITHOUT pressing the button
-THERM_PRESS_POS = None          # TODO measure: a bit tighter, clicks the button
+THERM_MODE = "press"            # "press": hold gently, click at the ball (needs the 2 positions below); "fast": the grip clicks, swing fast
+THERM_HOLD_POS = 260            # measured Sat 11 AM: holds the thermometer, button not pressed
+THERM_PRESS_POS = 250           # measured Sat 11 AM: clicks the button (~1 mm tighter)
+THERM_CLICK_S = 0.01            # press this long, then back to HOLD: held down it doesn't measure
 THERM_SHOW_S = 2.0              # keep pointing at the ball this long
 THERM_GRIPPER_SETTLE_S = 0.6    # wait after a gripper position change
 THERM_FAST_VEL_DEGS = 60.0      # "fast" mode swing grip -> aim; 120 after a clean run (arm config speed must allow it)
