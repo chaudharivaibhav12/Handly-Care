@@ -44,7 +44,7 @@ ROUTINES = {
         ("", "Reaching for the cap"),
         ("cap_grip:", "Unscrewing the cap"),
         ("cap_above wrist", "Lifting the cap off"),
-        ("cap dropped", "Returning to the start pose"),
+        ("cap dropped", "Cap off, let go of the bottle"),
     ]),
     "pour": (["pour"], 60, [
         ("", "Picking up the bottle"),
@@ -55,7 +55,7 @@ ROUTINES = {
         ("", "Reaching for the cap"),
         ("cap_grip:", "Unscrewing the cap"),
         ("cap_above wrist", "Lifting the cap off"),
-        ("cap dropped", "Returning to the start pose"),
+        ("cap dropped", "Cap off, let go of the bottle"),
         ("bottle_grip:", "Picking up the bottle"),
         ("bottle_lift:", "Pouring the water"),
         ("slow bottle_lift", "Putting the bottle back"),

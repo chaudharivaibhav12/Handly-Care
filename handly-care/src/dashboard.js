@@ -92,6 +92,7 @@ const CUES = {
   'Picking up the thermometer': 'Let me check your temperature.',
   'Measuring': 'Measuring.',
   'Unscrewing the cap': 'Opening your bottle. Please hold it steady.',
+  'Cap off, let go of the bottle': 'The cap is off. You can let go of the bottle now.',
   'Pouring the water': 'Pouring your water.',
   'Putting the bottle back': "Here's your water.",
 };
