@@ -207,8 +207,8 @@ THERM_FAST_ACC_DEGS = 300.0
 # Bottle cap (Sat 1:35 PM): a person holds the bottle; the arm unscrews the cap with re-grip twists of the last joint.
 CAP_TWISTS = 3                  # grip-twist-release cycles (Vaibhav: 3 x 120 deg ~ one full turn)
 CAP_TWIST_DEG = -120.0          # per twist; MINUS = anticlockwise seen from above? CHECK with a dry twist first
-CAP_TWIST_VEL_DEGS = 30.0
-CAP_TWIST_ACC_DEGS = 60.0
+CAP_TWIST_VEL_DEGS = 60.0
+CAP_TWIST_ACC_DEGS = 120.0
 WRIST_LIMIT_DEG = 355.0         # xArm6 joint 6 range is +-360 deg
 DRAWER_CLOSE_SHORT_MM = 10.0
 DRAWER_EXTRA_OPEN_MM = 30.0    # pull this far past the taught 'open' (6:31 PM: wanted ~3 cm more); 0 = as taught   # close stops this short of 'grip' (5:35 PM: full close pushed the box back ~1 cm)
