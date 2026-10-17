@@ -515,7 +515,7 @@ class RealRobot:
         data = taught.load()
         await self.replay(data, taught.cap_sequence(data, config.CAP_TWISTS, config.CAP_TWIST_DEG))
 
-    async def drop_cap(self, xy, rim_h, drop_z=None):
+    async def drop_cap(self, xy, rim_h, drop_z=None, theta=None):
         """Holding the cap above the bottle: carry it at the current height to above the cup at xy (calibrated
         slot), straight down to CAP_DROP_ABOVE_RIM_MM over the rim (rim_h mm above the table), let go, back up.
         Same-height carry first so it never sweeps low past the bottle (Sat 2 PM)."""
@@ -524,14 +524,14 @@ class RealRobot:
         if drop_z is None:
             drop_z = config.TABLE_Z + rim_h + config.CAP_DROP_ABOVE_RIM_MM
         travel = max(here.z, drop_z + config.CAP_DROP_CLEAR_MM)
-        await self.move_to(x, y, travel)                                   # over the cup, pointing down
-        await self.move_to(x, y, drop_z, straight=True)                    # down to just above the rim
+        await self.move_to(x, y, travel, theta=theta)                      # over the cup, pointing down
+        await self.move_to(x, y, drop_z, straight=True, theta=theta)       # down to just above the rim
         await self.gripper.open()
         print("  cap dropped")
-        await self.move_to(x, y, travel, straight=True)                    # back up, clear of the cup
+        await self.move_to(x, y, travel, straight=True, theta=theta)       # back up, clear of the cup
 
-    async def pour(self):
-        """Arm at 'high', bottle (cap off) on slot 2: pick it up, pour into the slot 1 cup, stand it back on slot 2.
+    async def pour(self, start="high"):
+        """Arm at `start` ('high', or 'cap_drop' straight after dropping the cap), bottle (cap off) on slot 2: pick it up, pour into the slot 1 cup, stand it back on slot 2.
         'high' -> bottle_approach is a ~95 deg jump on several joints, too big to replay blind across the table, so
         the PLANNER takes the arm there (around the table and walls), and the taught replay continues only if it
         arrived in the taught arm shape. Back to 'high' the careful way (to_high)."""
@@ -542,7 +542,7 @@ class RealRobot:
             # Sat 2:19 PM: the planner refused bottle_approach (forearm inside the configured wall-front box, though
             # the real wall is clear). Taught waypoint instead: high -> bottle_via -> bottle_approach, and back.
             await self.replay(data, [("release", []), ("move", ["bottle_via", "bottle_approach"])] + steps
-                              + [("move", ["bottle_via", "high"])])
+                              + [("move", ["bottle_via", "high"])], start=start)
             return
         await self.gripper.open()
         a = data["bottle_approach"]["pose"]
@@ -652,10 +652,10 @@ class SimRobot:
     async def cap(self):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["cap"]
 
-    async def drop_cap(self, xy, rim_h, drop_z=None):
+    async def drop_cap(self, xy, rim_h, drop_z=None, theta=None):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["drop_cap"]
 
-    async def pour(self):
+    async def pour(self, start="high"):
         self.drawer_moves = getattr(self, "drawer_moves", []) + ["pour"]
 
     async def to_high(self, log=print):

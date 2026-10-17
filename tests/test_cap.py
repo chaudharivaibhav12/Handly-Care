@@ -123,3 +123,15 @@ def test_pour_through_a_taught_waypoint_never_uses_the_planner(monkeypatch):
     path = [[by[tuple(j)] for j in s] for s in seen]
     assert path[0] == ["bottle_via", "bottle_approach"] and path[-1] == ["bottle_via", "high"]
     assert ["pour"] in path
+
+
+def test_water_goes_from_the_cup_straight_to_the_bottle_when_taught():
+    """Sat 2:35 PM: no detour to 'high' between dropping the cap and picking up the bottle."""
+    import app
+    from conftest import sim
+    teach_all()
+    taught.save("cap_drop", [7.0] * 6, {"x": 353.0, "y": 42.0, "z": 154.0, "theta": 170.0})
+    taught.save("bottle_via", [8.0] * 6, {"x": 254.0, "y": 129.0, "z": 388.0})
+    robot = sim()
+    assert run(app.run_command(robot, ["water"])) is True
+    assert robot.drawer_moves == ["cap", "drop_cap", "pour"]

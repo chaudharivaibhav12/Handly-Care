@@ -295,7 +295,7 @@ async def run_command(robot, cmd):
     elif cmd[0] in ("cap", "pour", "water") and len(cmd) == 1:
         # From 'high'. cap: a person holds the bottle on slot 2; unscrew the cap, drop it in the slot 3 cup,
         # back to 'high'. pour: pick the open bottle up, fill the slot 1 cup, put it back. water: both (Sat 2 PM).
-        step = "start"
+        step, direct = "start", False
         try:
             if cmd[0] in ("cap", "water"):
                 step = "unscrewing the cap"
@@ -305,14 +305,18 @@ async def run_command(robot, cmd):
                 spot = taught.load().get("cap_drop")
                 if spot:      # Sat 2:30: the calibrated slot 3 missed the cup; a hand-shown spot over its centre wins
                     p = spot["pose"]
-                    await robot.drop_cap((p["x"], p["y"]), config.CAP_CUP_HEIGHT_MM, drop_z=p["z"])
+                    await robot.drop_cap((p["x"], p["y"]), config.CAP_CUP_HEIGHT_MM, drop_z=p["z"], theta=p["theta"])
                 else:
                     await robot.drop_cap(config.ALL_SPOTS[config.CAP_CUP_SPOT], config.CAP_CUP_HEIGHT_MM)
-                step = "going back to 'high'"
-                await robot.to_high()
+                # Sat 2:35 PM: water goes from the cup straight up to bottle_via and on to the bottle (taught path,
+                # no detour to 'high'); a plain `cap`, or no taught cap_drop/bottle_via, ends at 'high'.
+                direct = cmd[0] == "water" and spot and "bottle_via" in taught.load()
+                if not direct:
+                    step = "going back to 'high'"
+                    await robot.to_high()
             if cmd[0] in ("pour", "water"):
                 step = "pouring"
-                await robot.pour()
+                await robot.pour(start="cap_drop" if cmd[0] == "water" and direct else "high")
         except KeyError as e:
             print(f"can't do that yet: {e.args[0]}")
             return False
