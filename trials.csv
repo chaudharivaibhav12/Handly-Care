@@ -108,3 +108,11 @@ time,command,object,from,to,grabbed,error_mm,note
 14:39:03,water,bottle,slot2,slot1,0,,stopped while pouring: I'm too far from the start pose (111 deg on one joint); move me near 'high' first
 14:51:22,water,bottle,slot2,slot1,1,,y
 15:00:35,water,bottle,slot2,slot1,0,,stopped while unscrewing the cap: I'm too far from the start pose (68 deg on one joint); move me near 'high' first
+15:07:07,water,bottle,slot2,slot1,1,,ran (outcome not checked)
+15:08:31,tissue,tissue_box,"322,273",handoff,1,,ran (outcome not checked)
+15:09:47,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+15:10:43,thermometer,thermometer,therm_spot,ball,1,,"ran, mode press (outcome not checked)"
+15:13:21,water,bottle,slot2,slot1,1,,ran (outcome not checked)
+15:15:59,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+15:19:29,medicine,pill_box,drawer,handoff,1,,ran (outcome not checked)
+15:21:13,water,bottle,slot2,slot1,1,,ran (outcome not checked)
