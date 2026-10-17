@@ -110,15 +110,15 @@ const SCRIPT = [
   //    (Vaibhav, Sat 11:50: no Release click in the demo; the confirm box before the run stays)
   ()=>{ log('12','System','03:00 medication box is due. Released in advance by R. Alvarez, RN at 7:15pm · Acetaminophen, docusate.');
         armTask('12','pill box',{lastLabel:'Pill box', doneText:'Handed nurse-prepared pill box to '+S.rooms['12'].pt+'. Logged to MAR'}); },
-  // Risk: respiratory depression in another room, nurse only
-  ()=>{ log('11','Alert','SpO₂ 88% and falling. Arm actions locked for this room.');
-        addItem({sev:'critical', room:'11', title:'SpO₂ 88% and falling', detail:'Sleep apnea · opioid at 01:15 · RR 8 · hard to wake · was 95% at 01:40', acts:[['On my way','enroute','danger']]}); renderAll(); },
   // 3. Temperature: arm measures without contact, nurse reviews
   ()=>{ log('12','System','Scheduled temperature check. Arm announces it before moving.');
         armTask('12','IR thermometer',{kind:'temp', count:false, lastLabel:'Temp check',
           phases:[['Announcing temperature check',1500],['Moving slowly near forehead',2500],['Reading temperature',2000],['Returning home',1500]],
           doneText:'Temperature 38.4 °C (demo reading), flagged for nurse review',
           done:()=>{ addItem({sev:'review', room:'12', title:'Temperature 38.4 °C', detail:'Non-contact reading by arm · 37.4 °C at 11pm · POD 2 appendectomy', acts:[["I'll assess",'assess','primary'],['Acknowledge','ack','']]}); }}); },
+  // Risk: respiratory depression in another room, nurse only (after the arm beats, so they run back to back)
+  ()=>{ log('11','Alert','SpO₂ 88% and falling. Arm actions locked for this room.');
+        addItem({sev:'critical', room:'11', title:'SpO₂ 88% and falling', detail:'Sleep apnea · opioid at 01:15 · RR 8 · hard to wake · was 95% at 01:40', acts:[['On my way','enroute','danger']]}); renderAll(); },
   // Risk: fall, routed to staff
   ()=>{ log('10','Patient','Voice request: "I need to get to the bathroom."');
         log('10','System','Not an arm task. Fall risk, routed to staff.');
@@ -335,7 +335,7 @@ setInterval(()=>{
   const due = S.jobs.filter(j=>j.at<=S.sim).sort((a,b)=>a.at-b.at);
   S.jobs = S.jobs.filter(j=>j.at>S.sim);
   due.forEach(j=>j.fn());
-  if(S.step<SCRIPT.length && scriptWaiting()) S.nextAt = Math.max(S.nextAt, S.sim + 3000);   // 3 s after it's free
+  if(S.step<SCRIPT.length && scriptWaiting()) S.nextAt = S.sim;   // next beat the moment the arm is free (Sat: no gap)
   else if(S.step<SCRIPT.length && S.sim>=S.nextAt) fireStep();
   $('clock').textContent = clock();
   tickBars();
